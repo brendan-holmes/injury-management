@@ -1,11 +1,57 @@
-console.log("Hello World!");
-
 const form = document.querySelector('form');
 const loadingElement = document.querySelector('.loading');
+const mewsElement = document.querySelector('.mews');
 const API_PORT_NUM = 5000;
 const API_URL = `http://localhost:${API_PORT_NUM}/mews`;
 
-loadingElement.style.display = 'none';
+const showForm = () => form.style.display = '';
+const hideForm = () => form.style.display = 'none';
+const showLoadingElement = () => loadingElement.style.display = '';
+const hideLoadingElement = () => loadingElement.style.display = 'none';
+
+function listAllMews () {
+    mewsElement.innerHTML = '';
+    fetch(API_URL)
+        .then(response => response.json())
+        .then(mews => {
+            hideLoadingElement();
+            mews.reverse();
+            mews.forEach(mew => {
+                const div = document.createElement('div');
+                
+                const header = document.createElement('h3');
+                header.textContent = mew.name;
+
+                const content = document.createElement('p');
+                content.textContent = mew.content;
+
+                const date = document.createElement('small');
+                date.textContent = new Date(mew.created);
+
+                div.appendChild(header);
+                div.appendChild(content);
+                div.appendChild(date);
+
+                mewsElement.append(div);
+            });
+        });
+}
+
+function handleResponse(response) {
+    if (!response.ok) {
+        return response.json()
+            .catch(() => {
+                // Couldn't parse the JSON
+                throw new Error(response.status)
+            })
+            .then(({message}) => {
+                // Got valid JSON with error response, use it
+                throw new Error(message || response.status);
+            });
+    }
+
+    return response.json()
+}
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -18,8 +64,10 @@ form.addEventListener('submit', (event) => {
         content
     };
 
-    form.style.display = 'none';
-    loadingElement.style.display = '';
+    hideForm();
+    showLoadingElement();
+
+    console.log('Posting mew...');
 
     fetch(API_URL, {
         method: 'POST',
@@ -27,5 +75,16 @@ form.addEventListener('submit', (event) => {
         headers: {
             'content-type': 'application/json'
         }
-    });
+    })
+    .then(handleResponse)
+    .then(createdMew => {
+        console.log(createdMew);
+        form.reset();
+        showForm();
+        listAllMews();
+    })
 })
+
+showForm();
+showLoadingElement();
+listAllMews();
