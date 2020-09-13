@@ -1,9 +1,9 @@
 {
   "name": "server",
   "description": "",
-  "version": "1.0.0",
+  "version": "6.x",
   "engines": {
-    "node": "6.x"
+    "node": "13.x"
   },
   "main": "index.js",
   "scripts": {
