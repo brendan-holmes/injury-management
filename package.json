@@ -1,7 +1,7 @@
 {
-  "name": "server",
-  "description": "",
-  "version": "6.x",
+  "name": "Meower",
+  "description": "Twitter clone tutorial by Coding Garden",
+  "version": "1.0.0",
   "engines": {
     "node": "13.x"
   },
