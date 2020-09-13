@@ -4,8 +4,10 @@ const {body, validationResult} = require('express-validator');
 const monk = require('monk');
 const Filter = require('bad-words');
 const rateLimit = require("express-rate-limit");
+const path = require('path');
 
 const app = express();
+// mongo "mongodb+srv://cluster0.wbxmo.mongodb.net/<dbname>" --username brendan
 const db = monk(process.env.MONGO_URI || 'localhost/meower')
 db.then(() => console.log('Connected correctly to server'))
 const mews = db.get('mews');
@@ -24,12 +26,6 @@ app.use(express.json());
 app.use(limiter);
 
 const PORT_NUM = 5000;
-
-app.get('/', (req, res) => {
-    res.json({
-        message: 'Meower! 😹🐈'
-    })
-});
 
 app.get('/mews', (req, res) => {
     mews
@@ -68,6 +64,24 @@ app.post('/mews', [
                 res.json(createdMew);
             });
 })
+
+if (process.env.NODE_ENV === 'production') {
+    // Serve any static files
+    app.use(express.static(path.join(__dirname, 'client/build')));
+
+    // Handle React routing, return all requests to React app
+    app.get('*', function(req, res) {
+        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    });
+} else {
+    // Serve any static files
+    app.use(express.static(path.join(__dirname, 'client')));
+
+    // Handle React routing, return all requests to React app
+    app.get('*', function(req, res) {
+        res.sendFile(path.join(__dirname, 'client', 'index.html'));
+    });
+}
 
 app.listen(PORT_NUM, () => {
     console.log(`Listening on http://localhost:${PORT_NUM}`);
