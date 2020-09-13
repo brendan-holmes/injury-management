@@ -3,7 +3,7 @@ const loadingElement = document.querySelector('.loading');
 const mewsElement = document.querySelector('.mews');
 const HEROKU_PORT = 80;
 const API_PORT = HEROKU_PORT;
-const API_URL = `http://localhost:${API_PORT}/mews`;
+const API_URL = `http://${window.location.hostname}:${API_PORT}/mews`;
 
 const showForm = () => form.style.display = '';
 const hideForm = () => form.style.display = 'none';
@@ -14,7 +14,7 @@ function listAllMews () {
     mewsElement.innerHTML = '';
     fetch(API_URL, {
         headers: {
-            "Access-Control-Allow-Origin": "*" //`${API_URL}`
+            "Access-Control-Allow-Origin": `${window.location.hostname}`
         }})
         .then(response => response.json())
         .then(mews => {
@@ -77,7 +77,8 @@ form.addEventListener('submit', (event) => {
         method: 'POST',
         body: JSON.stringify(mew),
         headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            "Access-Control-Allow-Origin": `${window.location.hostname}`
         }
     })
     .then(handleResponse)

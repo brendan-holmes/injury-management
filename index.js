@@ -1,3 +1,5 @@
+// Use .env file in development, and in production environment variables
+// are saved manually
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
@@ -13,7 +15,6 @@ const path = require('path');
 const app = express();
 
 // Connect to db
-
 const dbUri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wbxmo.mongodb.net/${process.env.DB_COLL}?retryWrites=true&w=majority`;
 const db = require('monk')(dbUri);
 db.catch(error => console.log(error));
@@ -74,11 +75,11 @@ app.post('/mews', [
 // Serve any static files
 app.use(express.static(path.join(__dirname, 'client')));
 
-// Handle React routing, return all requests to React app
+// Handle html routing, return all requests to html app
 app.get('*', function(req, res) {
     res.sendFile(path.join(__dirname, 'client', 'index.html'));
 });
 
 app.listen(PORT, () => {
-    console.log(`Listening on http://localhost:${PORT}`);
+    console.log(`Listening on http://${window.Location.hostname}:${PORT}`);
 });
