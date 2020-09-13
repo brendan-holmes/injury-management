@@ -1,8 +1,9 @@
 const form = document.querySelector('form');
 const loadingElement = document.querySelector('.loading');
 const mewsElement = document.querySelector('.mews');
-const API_PORT_NUM = 5000;
-const API_URL = `http://localhost:${API_PORT_NUM}/mews`;
+const HEROKU_PORT = 80;
+const API_PORT = HEROKU_PORT;
+const API_URL = `http://localhost:${API_PORT}/mews`;
 
 const showForm = () => form.style.display = '';
 const hideForm = () => form.style.display = 'none';
@@ -11,7 +12,10 @@ const hideLoadingElement = () => loadingElement.style.display = 'none';
 
 function listAllMews () {
     mewsElement.innerHTML = '';
-    fetch(API_URL)
+    fetch(API_URL, {
+        headers: {
+            "Access-Control-Allow-Origin": "*" //`${API_URL}`
+        }})
         .then(response => response.json())
         .then(mews => {
             hideLoadingElement();

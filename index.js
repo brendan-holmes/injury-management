@@ -1,31 +1,40 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+    //console.log("Read in env variables.");
+    //console.log(process.env);
+}
+
 const express = require('express');
 const cors = require('cors');
 const {body, validationResult} = require('express-validator');
-const monk = require('monk');
+
 const Filter = require('bad-words');
 const rateLimit = require("express-rate-limit");
 const path = require('path');
 
 const app = express();
-// mongo "mongodb+srv://cluster0.wbxmo.mongodb.net/<dbname>" --username brendan
-const db = monk(process.env.MONGO_URI || 'localhost/meower')
-db.then(() => console.log('Connected correctly to server'))
+
+// Connect to db
+
+const dbUri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wbxmo.mongodb.net/${process.env.DB_COLL}?retryWrites=true&w=majority`;
+console.log(`Connecting to DB at URI: ${dbUri}`);
+const db = require('monk')(dbUri);
+db.catch(error => console.log(error));
+
 const mews = db.get('mews');
 const filter = new Filter();
-
-// Enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
-// see https://expressjs.com/en/guide/behind-proxies.html
-// app.set('trust proxy', 1);
 const limiter = rateLimit({
     windowMs: 10 * 1000, // window of 10 seconds
     max: 10 // limit each IP to 10 requests per windowMs
   });
+const PORT = process.env.PORT || 80;
 
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
 app.use(cors());
 app.use(express.json());
 app.use(limiter);
-
-const PORT_NUM = 5000;
 
 app.get('/mews', (req, res) => {
     mews
@@ -83,6 +92,6 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-app.listen(PORT_NUM, () => {
-    console.log(`Listening on http://localhost:${PORT_NUM}`);
+app.listen(PORT, () => {
+    console.log(`Listening on http://localhost:${PORT}`);
 });
