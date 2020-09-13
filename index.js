@@ -1,7 +1,5 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
-    //console.log("Read in env variables.");
-    //console.log(process.env);
 }
 
 const express = require('express');
@@ -17,7 +15,6 @@ const app = express();
 // Connect to db
 
 const dbUri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wbxmo.mongodb.net/${process.env.DB_COLL}?retryWrites=true&w=majority`;
-console.log(`Connecting to DB at URI: ${dbUri}`);
 const db = require('monk')(dbUri);
 db.catch(error => console.log(error));
 
