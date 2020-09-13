@@ -81,5 +81,5 @@ app.get('*', function(req, res) {
 });
 
 app.listen(PORT, () => {
-    console.log(`Listening on http://${window.Location.hostname}:${PORT}`);
+    console.log(`Listening on http://localhost:${PORT}`);
 });
