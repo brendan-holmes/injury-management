@@ -9,8 +9,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "db": "mongod --dbpath=/data --port 27017",
-    "heroku-postbuild": "cd client && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "db": "mongod --dbpath=/data --port 27017"
   },
   "keywords": [],
   "author": "",
