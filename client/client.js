@@ -2,7 +2,9 @@ const form = document.querySelector('form');
 const loadingElement = document.querySelector('.loading');
 const mewsElement = document.querySelector('.mews');
 const API_PORT = 80;
-const API_URL = `http://localhost:${API_PORT}/mews`;
+//const API_URL = `http://localhost:${API_PORT}/api/mews`;
+//const API_URL = `http://localhost/api/mews`;
+const apiUrl = "/api/mews";
 
 const showForm = () => form.style.display = '';
 const hideForm = () => form.style.display = 'none';
@@ -11,7 +13,7 @@ const hideLoadingElement = () => loadingElement.style.display = 'none';
 
 function listAllMews () {
     mewsElement.innerHTML = '';
-    fetch(API_URL)
+    fetch(apiUrl)
         .then(response => response.json())
         .then(mews => {
             hideLoadingElement();
@@ -69,7 +71,7 @@ form.addEventListener('submit', (event) => {
 
     console.log('Posting mew...');
 
-    fetch(API_URL, {
+    fetch(apiUrl, {
         method: 'POST',
         body: JSON.stringify(mew),
         headers: {

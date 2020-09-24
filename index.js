@@ -34,7 +34,7 @@ app.use(cors());
 app.use(express.json());
 app.use(limiter);
 
-app.get('/mews', (req, res) => {
+app.get('/api/mews', (req, res) => {
     mews
         .find()
         .then(mews => {
@@ -42,7 +42,7 @@ app.get('/mews', (req, res) => {
         });
 });
 
-app.post('/mews', [
+app.post('/api/mews', [
     body('name')
         .not().isEmpty(),
     body('content')
@@ -76,9 +76,9 @@ app.post('/mews', [
 app.use(express.static(path.join(__dirname, 'client')));
 
 // Handle html routing, return all requests to html app
-app.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname, 'client', 'index.html'));
-});
+//app.get('/', function(req, res) {
+//    res.sendFile(path.join(__dirname, 'client', 'index.html'));
+//});
 
 app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`);
