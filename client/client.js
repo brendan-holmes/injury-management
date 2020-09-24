@@ -1,9 +1,8 @@
 const form = document.querySelector('form');
 const loadingElement = document.querySelector('.loading');
 const mewsElement = document.querySelector('.mews');
-const HEROKU_PORT = 5000;
-const API_PORT = HEROKU_PORT;
-const API_URL = `${window.location.protocol}//${window.location.hostname}:${API_PORT}/mews`;
+const API_PORT = 80;
+const API_URL = `http://localhost:${API_PORT}/mews`;
 
 const showForm = () => form.style.display = '';
 const hideForm = () => form.style.display = 'none';
