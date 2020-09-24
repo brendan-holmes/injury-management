@@ -1,7 +1,7 @@
 const form = document.querySelector('form');
 const loadingElement = document.querySelector('.loading');
 const mewsElement = document.querySelector('.mews');
-const HEROKU_PORT = 80;
+const HEROKU_PORT = 5000;
 const API_PORT = HEROKU_PORT;
 const API_URL = `${window.location.protocol}//${window.location.hostname}:${API_PORT}/mews`;
 
