@@ -11,10 +11,7 @@ const hideLoadingElement = () => loadingElement.style.display = 'none';
 
 function listAllMews () {
     mewsElement.innerHTML = '';
-    fetch(API_URL, {
-        headers: {
-            "Access-Control-Allow-Origin": `${window.location.hostname}`
-        }})
+    fetch(API_URL)
         .then(response => response.json())
         .then(mews => {
             hideLoadingElement();
@@ -76,8 +73,7 @@ form.addEventListener('submit', (event) => {
         method: 'POST',
         body: JSON.stringify(mew),
         headers: {
-            'content-type': 'application/json',
-            "Access-Control-Allow-Origin": `${window.location.hostname}`
+            'content-type': 'application/json'
         }
     })
     .then(handleResponse)
