@@ -15,3 +15,15 @@
     width: 80%;
     margin: 0 auto;
 }
+
+.mew-header-content {
+    display: inline;
+}
+
+#mew-name {
+    font-weight: bold;
+}
+
+.mew-header-secondary-content {
+    color: grey;
+}

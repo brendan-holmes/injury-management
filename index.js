@@ -25,7 +25,7 @@ const limiter = rateLimit({
     windowMs: 10 * 1000, // window of 10 seconds
     max: 10 // limit each IP to 10 requests per windowMs
   });
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
