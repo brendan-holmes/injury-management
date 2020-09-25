@@ -16,6 +16,14 @@
     margin: 0 auto;
 }
 
+.mew {
+    margin-bottom: 1.5em; 
+}
+
+.mew-content {
+    margin: 0 auto;
+}
+
 .mew-header-content {
     display: inline;
 }
@@ -24,6 +32,6 @@
     font-weight: bold;
 }
 
-.mew-header-secondary-content {
-    color: grey;
+.mew-header-secondary-content, .mew-button {
+    color: rgb(168, 168, 168);
 }

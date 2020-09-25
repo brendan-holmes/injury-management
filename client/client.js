@@ -19,6 +19,7 @@ function listAllMews () {
             mews.reverse();
             mews.forEach(mew => {
                 const mewDiv = document.createElement('div');
+                mewDiv.setAttribute('class', 'mew');
                 const mewHeaderDiv = document.createElement('div');
                 
                 const name = document.createElement('p');
@@ -38,10 +39,20 @@ function listAllMews () {
                 mewHeaderDiv.appendChild(date);
 
                 const content = document.createElement('p');
+                content.setAttribute('class', 'mew-content')
                 content.textContent = mew.content;
+
+                const buttons = document.createElement('div');
+                const deleteButton = document.createElement('a');
+                deleteButton.setAttribute('class', 'mew-button');
+                const deleteIcon = document.createElement('i');
+                deleteIcon.innerHTML = '<i class="far fa-trash-alt"></i>'
+                deleteButton.appendChild(deleteIcon);
+                buttons.appendChild(deleteButton);
 
                 mewDiv.appendChild(mewHeaderDiv);
                 mewDiv.appendChild(content);
+                mewDiv.appendChild(buttons);
 
                 mewsElement.append(mewDiv);
             });
