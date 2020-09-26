@@ -24,22 +24,6 @@ function listAllMews () {
         });
 }
 
-function handleResponse(response) {
-    if (!response.ok) {
-        return response.json()
-            .catch(() => {
-                // Couldn't parse the JSON
-                throw new Error(response.status)
-            })
-            .then(({message}) => {
-                // Got valid JSON with error response, use it
-                throw new Error(message || response.status);
-            });
-    }
-
-    return response.json()
-}
-
 form.addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(form);
@@ -56,20 +40,13 @@ form.addEventListener('submit', (event) => {
 
     console.log('Posting mew...');
 
-    fetch(apiUrl, {
-        method: 'POST',
-        body: JSON.stringify(mew),
-        headers: {
-            'content-type': 'application/json'
-        }
-    })
-    .then(handleResponse)
-    .then(createdMew => {
-        console.log(createdMew);
-        form.reset();
-        showForm();
-        listAllMews();
-    })
+    apiEndpoints.postMew(mew)
+        .then(createdMew => {
+            console.log(createdMew);
+            form.reset();
+            showForm();
+            listAllMews();
+        });
 });
 
 showForm();
