@@ -23,7 +23,7 @@ const mews = db.get('mews');
 const filter = new Filter();
 const limiter = rateLimit({
     windowMs: 10 * 1000, // window of 10 seconds
-    max: 10 // limit each IP to 10 requests per windowMs
+    max: 100 // limit each IP to 10 requests per windowMs
   });
 const port = process.env.PORT || 5000;
 
@@ -71,6 +71,30 @@ app.post('/api/mews', [
                 res.json(createdMew);
             });
 })
+
+app.delete('/api/delete/:id', (req, res) => {
+    const id = req.params.id;
+
+    console.log('Deleting mew with id: ' + id);
+
+    mews.remove({_id: id})
+        .then(data => {
+        if (!data) {
+            res.status(404).send({
+            message: `Cannot delete mew with id=${id}. Maybe mew was not found!`
+            });
+        } else {
+            res.send({
+            message: "mew was deleted successfully!"
+            });
+        }
+        })
+        .catch(err => {
+        res.status(500).send({
+            message: "Could not delete mew with id=" + id
+        });
+    });
+});
 
 // Serve any static files
 app.use(express.static(path.join(__dirname, 'client')));

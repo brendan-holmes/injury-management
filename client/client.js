@@ -1,60 +1,25 @@
-import {DateFormatter} from './DateFormatter.js';
+import {MewComponent} from './MewComponent.js';
+import {ApiEndpoints} from './ApiEndpoints.js';
 
 const form = document.querySelector('form');
 const loadingElement = document.querySelector('.loading');
 const mewsElement = document.querySelector('.mews');
-const apiUrl = "/api/mews";
 
 const showForm = () => form.style.display = '';
 const hideForm = () => form.style.display = 'none';
 const showLoadingElement = () => loadingElement.style.display = '';
 const hideLoadingElement = () => loadingElement.style.display = 'none';
 
+const apiEndpoints = new ApiEndpoints();
+
 function listAllMews () {
     mewsElement.innerHTML = '';
-    fetch(apiUrl)
-        .then(response => response.json())
+    apiEndpoints.getAllMews()        
         .then(mews => {
             hideLoadingElement();
             mews.reverse();
             mews.forEach(mew => {
-                const mewDiv = document.createElement('div');
-                mewDiv.setAttribute('class', 'mew');
-                const mewHeaderDiv = document.createElement('div');
-                
-                const name = document.createElement('p');
-                name.setAttribute('id', 'mew-name')
-                name.setAttribute('class', 'mew-header-content')
-                name.textContent = mew.name;
-                mewHeaderDiv.appendChild(name);
-
-                const headerSpacer = document.createElement('p');
-                headerSpacer.setAttribute('class', 'mew-header-content mew-header-secondary-content')
-                headerSpacer.textContent = ' · '
-                mewHeaderDiv.appendChild(headerSpacer);
-
-                const date = document.createElement('p');
-                date.setAttribute('class', 'mew-header-content mew-header-secondary-content')
-                date.textContent = new DateFormatter(mew.created).getFormattedDateShort();
-                mewHeaderDiv.appendChild(date);
-
-                const content = document.createElement('p');
-                content.setAttribute('class', 'mew-content')
-                content.textContent = mew.content;
-
-                const buttons = document.createElement('div');
-                const deleteButton = document.createElement('a');
-                deleteButton.setAttribute('class', 'mew-button');
-                const deleteIcon = document.createElement('i');
-                deleteIcon.innerHTML = '<i class="far fa-trash-alt"></i>'
-                deleteButton.appendChild(deleteIcon);
-                buttons.appendChild(deleteButton);
-
-                mewDiv.appendChild(mewHeaderDiv);
-                mewDiv.appendChild(content);
-                mewDiv.appendChild(buttons);
-
-                mewsElement.append(mewDiv);
+                mewsElement.append(new MewComponent(mew, apiEndpoints, listAllMews).getElement());
             });
         });
 }
@@ -105,7 +70,7 @@ form.addEventListener('submit', (event) => {
         showForm();
         listAllMews();
     })
-})
+});
 
 showForm();
 showLoadingElement();
