@@ -96,6 +96,41 @@ app.delete('/api/delete/:id', (req, res) => {
     });
 });
 
+app.put('/api/mews/:id', (req, res) => {
+    const id = req.params.id;
+    const body = req.body
+
+    console.log('Updating mew with id: ' + id + body);
+
+    const mew = {
+        name: filter.clean(req.body.name.toString()),
+        content: filter.clean(req.body.content.toString()),
+        created: body.created.toString()
+    };
+
+    console.log(mew);
+
+    mews
+        //.update({_id: id}, mew)
+        .update({_id: id}, {$set: mew})
+        .then(data => {
+        if (!data) {
+            res.status(404).send({
+            message: `Cannot update mew with id=${id}. Maybe mew was not found!`
+            });
+        } else {
+            res.send({
+            message: "Mew was updated successfully!"
+            });
+        }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Could not update mew with id=" + id
+            });
+        });
+})
+
 // Serve any static files
 app.use(express.static(path.join(__dirname, 'client')));
 

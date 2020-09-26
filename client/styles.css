@@ -21,7 +21,9 @@
 }
 
 .mew-content {
-    margin: 0 auto;
+    /* margin: 0 auto; */
+    margin-bottom: 0;
+    display: block;
 }
 
 .mew-header-content {
@@ -32,6 +34,16 @@
     font-weight: bold;
 }
 
+.mew-button {
+    display: inline;
+    margin-right: 0.8em;
+}
+
 .mew-header-secondary-content, .mew-button {
     color: rgb(168, 168, 168);
+}
+
+.mew-edit-button {
+    display: inline;
+    margin-right: 0.8em;
 }

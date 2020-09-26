@@ -1,10 +1,10 @@
 import {DateFormatter} from './DateFormatter.js';
 
 export class MewComponent {
-    constructor(mew, apiEndpoints, refresh) {
+    constructor(mew, apiEndpoints, refreshMews) {
         this.mew = mew;
         this.apiEndpoints = apiEndpoints;
-        this.refresh = refresh;
+        this.refreshMews = refreshMews;
     }
 
     getElement() {
@@ -41,10 +41,71 @@ export class MewComponent {
         deleteButton.appendChild(deleteIcon);
         deleteButton.addEventListener('click', () => {
             console.log('Delete button clicked! Mew id: ', this.mew._id);
-            this.apiEndpoints.deleteMew(this.mew._id)
-                .then(this.refresh())
+            this.apiEndpoints.deleteMew(this.mew._id);
+            mewDiv.style.display = 'none';
         });
         buttons.appendChild(deleteButton);
+        const editButton = document.createElement('a');
+        editButton.setAttribute('class', 'mew-button delete-button');
+        const editIcon = document.createElement('i');
+        editIcon.innerHTML = '<i class="fas fa-pencil-alt"></i>'
+        editButton.appendChild(editIcon);
+        editButton.addEventListener('click', () => {
+            console.log('Edit button clicked! Mew id: ', this.mew._id);
+            
+            // Set mew in edit mode
+            // Replace name with text input
+            name.style.display = 'none';
+            const nameInput = document.createElement('input');
+            nameInput.value = name.textContent;
+            name.insertAdjacentElement('afterend', nameInput);
+            
+            // Replace content with text input
+            content.style.display = 'none';
+            const contentInput = document.createElement('input');
+            contentInput.setAttribute('class', 'mew-content');
+            contentInput.value = content.textContent;
+            content.insertAdjacentElement('afterend', contentInput);
+            
+            // Add Save and Cancel buttons
+            buttons.style.display = 'none';
+            const editOkButton = document.createElement('button');
+            editOkButton.textContent = 'OK';
+            editOkButton.setAttribute('class', 'mew-edit-button');
+            editOkButton.addEventListener('click', () => {
+                console.log('OK button clicked.');
+                const newMew = this.mew;
+                newMew.name = nameInput.value;
+                newMew.content = contentInput.value;
+                this.apiEndpoints.updateMew(this.mew._id, newMew)
+                    .then((res) => {console.log(res)});
+                name.textContent = newMew.name;
+                content.textContent = newMew.content;
+                nameInput.remove();
+                contentInput.remove();
+                editOkButton.remove();
+                editCancelButton.remove();
+                name.style.display = '';
+                content.style.display = '';
+                buttons.style.display = '';
+            });
+            buttons.insertAdjacentElement('beforebegin', editOkButton);
+
+            const editCancelButton = document.createElement('button');
+            editCancelButton.textContent = 'Cancel';
+            editCancelButton.setAttribute('class', 'mew-edit-button');
+            editCancelButton.addEventListener('click', () => {
+                nameInput.remove();
+                contentInput.remove();
+                editOkButton.remove();
+                editCancelButton.remove();
+                name.style.display = '';
+                content.style.display = '';
+                buttons.style.display = '';
+            });
+            buttons.insertAdjacentElement('afterend', editCancelButton);
+        });
+        buttons.appendChild(editButton);
 
         mewDiv.appendChild(mewHeaderDiv);
         mewDiv.appendChild(content);

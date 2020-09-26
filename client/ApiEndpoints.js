@@ -3,6 +3,7 @@ export class ApiEndpoints {
         this.postMewEndpoint = '/api/mews';
         this.listMewsEndpoint = '/api/mews';
         this.deleteEndpoint = '/api/delete';
+        this.updateEndpoint = '/api/mews';
     }
 
     async getAllMews () {
@@ -21,6 +22,18 @@ export class ApiEndpoints {
     async postMew (mew) {
         const response = await fetch(this.postMewEndpoint, {
             method: 'POST',
+            body: JSON.stringify(mew),
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
+        return await response.json();
+    }
+
+    async updateMew (id, mew) {
+        console.log(`Updating mew with id: ${id}. ${mew}`);
+        const response = await fetch(this.updateEndpoint + '/' + `${id}`, {
+            method: 'PUT',
             body: JSON.stringify(mew),
             headers: {
                 'content-type': 'application/json'
