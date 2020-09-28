@@ -1,9 +1,10 @@
-export class ApiEndpoints {
+export class Api {
     constructor () {
         this.postMewEndpoint = '/api/mews';
         this.listMewsEndpoint = '/api/mews';
         this.deleteEndpoint = '/api/delete';
         this.updateEndpoint = '/api/mews';
+        this.loginEndpoint = '/api/users/login'
     }
 
     async getAllMews () {
@@ -40,5 +41,24 @@ export class ApiEndpoints {
             }
         });
         return await response.json();
+    }
+
+    async loginUser (email, password) {
+        console.log(`Attempting to login with email ${email}`);
+
+        const userLoginDetails = {
+            email,
+            password
+        };
+
+        const response = await fetch(this.loginEndpoint, {
+            method: 'POST',
+            body: JSON.stringify(userLoginDetails),
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
+        // return await response.json();
+        return await response;//.text().then(text => console.log(text));
     }
 }

@@ -2,7 +2,16 @@
     text-align: center;
 }
 
-.mew-form {
+.secondary-title {
+    width: 50%;
+    margin: 0 auto 0.5em auto;
+}
+
+.failure-flash, .secondary-title {
+    padding-left: 0;
+}
+
+.mew-form, .failure-flash {
     width: 50%;
     margin: 0 auto;
 }
@@ -46,4 +55,17 @@
 .mew-edit-button {
     display: inline;
     margin-right: 0.8em;
+}
+
+.failure-flash {
+    color: red;
+}
+
+.nav {
+    text-align: right;
+}
+
+.nav-item {
+    /* text-align: right; */
+    display: inline;
 }

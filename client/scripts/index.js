@@ -1,7 +1,7 @@
 import {MewComponent} from './MewComponent.js';
-import {ApiEndpoints} from './ApiEndpoints.js';
+import {Api} from './Api.js';
 
-const form = document.querySelector('form');
+const form = document.querySelector('.mew-form');
 const loadingElement = document.querySelector('.loading');
 const mewsElement = document.querySelector('.mews');
 
@@ -10,16 +10,16 @@ const hideForm = () => form.style.display = 'none';
 const showLoadingElement = () => loadingElement.style.display = '';
 const hideLoadingElement = () => loadingElement.style.display = 'none';
 
-const apiEndpoints = new ApiEndpoints();
+const api = new Api();
 
 function listAllMews () {
     mewsElement.innerHTML = '';
-    apiEndpoints.getAllMews()        
+    api.getAllMews()        
         .then(mews => {
             hideLoadingElement();
             mews.reverse();
             mews.forEach(mew => {
-                mewsElement.append(new MewComponent(mew, apiEndpoints, listAllMews).getElement());
+                mewsElement.append(new MewComponent(mew, api, listAllMews).getElement());
             });
         });
 }
@@ -40,7 +40,7 @@ form.addEventListener('submit', (event) => {
 
     console.log('Posting mew...');
 
-    apiEndpoints.postMew(mew)
+    api.postMew(mew)
         .then(createdMew => {
             console.log(createdMew);
             form.reset();

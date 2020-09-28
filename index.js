@@ -1,25 +1,25 @@
-// Use .env file in development, and in production environment variables
-// are saved manually
 if (process.env.NODE_ENV !== 'production') {
+    // Use .env file in development, and in production environment variables
+    // are saved manually
     require('dotenv').config();
 }
 
-const express = require('express');
-const cors = require('cors');
-const {body, validationResult} = require('express-validator');
-
-const Filter = require('bad-words');
-const rateLimit = require("express-rate-limit");
-const path = require('path');
+const express                   = require('express');
+const cors                      = require('cors');
+const {body, validationResult}  = require('express-validator');
+const { Database }              = require('./Database.js');
+const Filter                    = require('bad-words');
+const rateLimit                 = require('express-rate-limit');
+const path                      = require('path');
+const bcrypt                    = require('bcrypt');
+const passport                  = require('passport');
+const flash                     = require('express-flash');
+const session                   = require('express-session');
+const initializePassport        = require('./passport-config');
+const methodOverride            = require('method-override');
 
 const app = express();
-
-// Connect to db
-const dbUri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wbxmo.mongodb.net/${process.env.DB_COLL}?retryWrites=true&w=majority`;
-const db = require('monk')(dbUri);
-db.catch(error => console.log(error));
-
-const mews = db.get('mews');
+const database = new Database();
 const filter = new Filter();
 const limiter = rateLimit({
     windowMs: 10 * 1000, // window of 10 seconds
@@ -27,16 +27,29 @@ const limiter = rateLimit({
   });
 const port = process.env.PORT || 5000;
 
+initializePassport(passport, database.getUserByEmail, database.getUserById);
+
 if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
 }
+app.set('view-engine', 'ejs');
+
 app.use(cors());
 app.use(express.json());
 app.use(limiter);
+app.use(express.urlencoded({ extended: false }));
+app.use(flash());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(methodOverride('_method'));
 
 app.get('/api/mews', (req, res) => {
-    mews
-        .find()
+    database.getAllMews()
         .then(mews => {
             res.json(mews);
         });
@@ -65,8 +78,7 @@ app.post('/api/mews', [
         };
 
         // insert into DB
-        mews
-            .insert(mew)
+        database.addMew(mew)
             .then(createdMew => {
                 res.json(createdMew);
             });
@@ -77,7 +89,7 @@ app.delete('/api/delete/:id', (req, res) => {
 
     console.log('Deleting mew with id: ' + id);
 
-    mews.remove({_id: id})
+    database.removeMewById(id)
         .then(data => {
         if (!data) {
             res.status(404).send({
@@ -90,8 +102,9 @@ app.delete('/api/delete/:id', (req, res) => {
         }
         })
         .catch(err => {
-        res.status(500).send({
-            message: "Could not delete mew with id=" + id
+            console.log(err);
+            res.status(500).send({
+                message: "Could not delete mew with id=" + id
         });
     });
 });
@@ -110,9 +123,7 @@ app.put('/api/mews/:id', (req, res) => {
 
     console.log(mew);
 
-    mews
-        //.update({_id: id}, mew)
-        .update({_id: id}, {$set: mew})
+    database.updateMewById(id, mew)
         .then(data => {
         if (!data) {
             res.status(404).send({
@@ -131,14 +142,81 @@ app.put('/api/mews/:id', (req, res) => {
         });
 })
 
+app.get('/api/users', (req, res) => {
+    database.getAllUsers()
+        .then(mewsers => {
+            res.json(mewsers);
+        });
+});
+
+app.post('/api/users/login', checkNotAuthenticated, passport.authenticate('local', {
+    failureRedirect: '/login',
+    failureFlash: true
+}), (req, res) => {
+    return res.redirect('/')
+});
+
+app.post('/api/users/register', checkNotAuthenticated, async (req, res) => {
+    try {
+        const numSaltRounds = 10;
+        const hashedPassword = await bcrypt.hash(req.body.password, numSaltRounds);
+
+        const mewser = {
+            name: req.body.name, 
+            email: req.body.email,
+            password: hashedPassword
+        };
+        database.createUser(mewser);
+        res.redirect('/login'); 
+    } catch (error) {
+        console.log(error);
+        res.redirect('/register'); 
+    }
+})
+
+app.delete('/api/users/logout', (req, res) => {
+    req.logOut();
+    res.redirect('/login');
+});
+
 // Serve any static files
 app.use(express.static(path.join(__dirname, 'client')));
 
-// Handle html routing, return all requests to html app
-//app.get('/', function(req, res) {
-//    res.sendFile(path.join(__dirname, 'client', 'index.html'));
-//});
+app.get('/login', checkNotAuthenticated, (req, res) => {
+    res.render(path.join(__dirname, 'client', './views/login.ejs'));
+})
+
+app.get('/register', checkNotAuthenticated, (req, res) => {
+    // res.sendFile(path.join(__dirname, 'client', 'register.html'));
+    res.render(path.join(__dirname, 'client', './views/register.ejs'));
+})
+
+app.get('/', checkAuthenticated, function(req, res) {
+    // if (user == null) {
+    //     res.redirect('/login');
+    // } else {
+    //     res.render(path.join(__dirname, 'client', './views/index.ejs'));
+    // }
+    
+    res.render(path.join(__dirname, 'client', './views/index.ejs'), { name: req.user.name });
+});
 
 app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`);
 });
+
+function checkAuthenticated(req, res, next) {
+    if(req.isAuthenticated()) {
+        return next();
+    }
+
+    return res.redirect('/login');
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if(req.isAuthenticated()) {
+        return res.redirect('/');    
+    }
+
+    return next();
+}

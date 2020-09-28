@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Meower - Twitter for Cats</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="../resources/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../resources/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../resources/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="../resources/favicon_io/site.webmanifest">
+</head>
+<body>
+    <header>
+        <div class="nav">
+            <form action="/login" method="GET" class="nav-item">
+                <button type="submit" class="nav-item">Login</button>
+            </form>
+        </div>
+        <h1 class="title">Meower - Twitter for Cats 😺🐈🐕</h1>
+    </header>
+    <main>
+        <h3 class="secondary-title">Register</h3>
+        <form class="mew-form" action="/api/users/register" method="POST">
+            <div>
+                <label for="name">Name</label>
+                <input class="u-full-width" type="text" id="name" name="name" required>
+                <label for="email">Email</label>
+                <input class="u-full-width" type="text" id="email" name="email">
+                <label for="password">Password</label>
+                <input class="u-full-width" type="password" id="password" name="password">
+                <button class="button-primary" type="submit">Register 😹</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
