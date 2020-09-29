@@ -2,50 +2,50 @@
 
 class Database {
     // Private fields
-    #mews;
-    #mewsers;
+    #injuries; // injuries
+    #users; // users
 
     constructor() {
         const dbUri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wbxmo.mongodb.net/${process.env.DB_COLL}?retryWrites=true&w=majority`;
         const db = require('monk')(dbUri);
         db.catch(error => console.log(error));
-        this.mews = db.get('mews');
-        this.mewsers = db.get('users');
+        this.injuries = db.get('injuries');
+        this.users = db.get('users');
     }
 
     getUserByEmail = async (email) => {
-        return await this.mewsers.findOne({email: email});
+        return await this.users.findOne({email: email});
     };
 
     getUserById = async (id) => {
-        return await this.mewsers.findOne({_id: id})
+        return await this.users.findOne({_id: id})
     };
 
-    getAllMews() {
-        return this.mews.find();
+    getAllInjuries() {
+        return this.injuries.find();
     }
 
-    addMew (mew) {
-        return this.mews.insert(mew);
+    addInjury (injury) {
+        return this.injuries.insert(injury);
     }
 
-    removeMewById(id){
-        return this.mews.remove({_id: id});
+    removeInjuryById(id){
+        return this.injuries.remove({_id: id});
     }
 
-    updateMewById(id, mew) {
-        return this.mews
-            .update({_id: id}, {$set: mew});
+    updateInjuryById(id, injury) {
+        return this.injuries
+            .update({_id: id}, {$set: injury});
     }
 
     getAllUsers(){
-        return this.mewsers
+        return this.users
             .find();
     }
 
-    createUser(mewser) {
-        return this.mewsers
-            .insert(mewser);
+    createUser(user) {
+        return this.users
+            .insert(user);
     }
 }
 

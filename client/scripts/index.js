@@ -1,9 +1,9 @@
-import {MewComponent} from './MewComponent.js';
+import {InjuryComponent} from './InjuryComponent.js';
 import {Api} from './Api.js';
 
-const form = document.querySelector('.mew-form');
+const form = document.querySelector('.injury-form');
 const loadingElement = document.querySelector('.loading');
-const mewsElement = document.querySelector('.mews');
+const injuriesElement = document.querySelector('.injuries');
 
 const showForm = () => form.style.display = '';
 const hideForm = () => form.style.display = 'none';
@@ -12,14 +12,14 @@ const hideLoadingElement = () => loadingElement.style.display = 'none';
 
 const api = new Api();
 
-function listAllMews () {
-    mewsElement.innerHTML = '';
-    api.getAllMews()        
-        .then(mews => {
+function listAllInjuries () {
+    injuriesElement.innerHTML = '';
+    api.getAllInjuries()        
+        .then(injuries => {
             hideLoadingElement();
-            mews.reverse();
-            mews.forEach(mew => {
-                mewsElement.append(new MewComponent(mew, api, listAllMews).getElement());
+            injuries.reverse();
+            injuries.forEach(injury => {
+                injuriesElement.append(new InjuryComponent(injury, api, listAllInjuries).getElement());
             });
         });
 }
@@ -30,7 +30,7 @@ form.addEventListener('submit', (event) => {
     const name = formData.get('name');
     const content = formData.get('content');
 
-    const mew = {
+    const injury = {
         name,
         content
     };
@@ -38,17 +38,17 @@ form.addEventListener('submit', (event) => {
     hideForm();
     showLoadingElement();
 
-    console.log('Posting mew...');
+    console.log('Posting injury...');
 
-    api.postMew(mew)
-        .then(createdMew => {
-            console.log(createdMew);
+    api.postInjury(injury)
+        .then(createdInjury => {
+            console.log(createdInjury);
             form.reset();
             showForm();
-            listAllMews();
+            listAllInjuries();
         });
 });
 
 showForm();
 showLoadingElement();
-listAllMews();
+listAllInjuries();

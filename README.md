@@ -1,13 +1,13 @@
-# Twitter clone with authentication.
+# Web App for Injury Management
 
-Followed this [YouTube tutorial](https://www.youtube.com/watch?v=JnEH9tYLxLk) from Code Garden (presented by The Coding Train) and added user authentication. Uses Express, MongoDB, NodeJS, no front-end frameworks
+Uses Express, MongoDB, NodeJS, no front-end frameworks.
 
 Features:
 - User authentication using passport and bcrypt
 - delete post button
 - edit post button
 
-![Screenshot](https://raw.githubusercontent.com/brendan-holmes/twitter-clone-code-garden-tutorial/master/screenshot.PNG)
+(Screenshot placeholder)
 
 ## Todo
 

@@ -1,29 +1,29 @@
 export class Api {
     constructor () {
-        this.postMewEndpoint = '/api/mews';
-        this.listMewsEndpoint = '/api/mews';
+        this.postInjuryEndpoint = '/api/injuries';
+        this.listInjuriesEndpoint = '/api/injuries';
         this.deleteEndpoint = '/api/delete';
-        this.updateEndpoint = '/api/mews';
+        this.updateEndpoint = '/api/injuries';
         this.loginEndpoint = '/api/users/login'
     }
 
-    async getAllMews () {
-        const response = await fetch(this.listMewsEndpoint);
+    async getAllInjuries () {
+        const response = await fetch(this.listInjuriesEndpoint);
         return await response.json();
     }
 
-    async deleteMew (id) {
-        console.log(`Deleting mew with id: ${id}.`);
+    async deleteInjury (id) {
+        console.log(`Deleting injury with id: ${id}.`);
         const response = await fetch(this.deleteEndpoint + '/' + `${id}`, {
             method: 'DELETE'
         });
         return await response.json();
     }
 
-    async postMew (mew) {
-        const response = await fetch(this.postMewEndpoint, {
+    async postInjury (injury) {
+        const response = await fetch(this.postInjuryEndpoint, {
             method: 'POST',
-            body: JSON.stringify(mew),
+            body: JSON.stringify(injury),
             headers: {
                 'content-type': 'application/json'
             }
@@ -31,11 +31,11 @@ export class Api {
         return await response.json();
     }
 
-    async updateMew (id, mew) {
-        console.log(`Updating mew with id: ${id}. ${mew}`);
+    async updateInjury (id, injury) {
+        console.log(`Updating injury with id: ${id}. ${injury}`);
         const response = await fetch(this.updateEndpoint + '/' + `${id}`, {
             method: 'PUT',
-            body: JSON.stringify(mew),
+            body: JSON.stringify(injury),
             headers: {
                 'content-type': 'application/json'
             }

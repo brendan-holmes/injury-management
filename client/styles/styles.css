@@ -11,7 +11,7 @@
     padding-left: 0;
 }
 
-.mew-form, .failure-flash {
+.injury-form, .failure-flash {
     width: 50%;
     margin: 0 auto;
 }
@@ -20,39 +20,39 @@
     text-align: center;
 }
 
-.mews {
+.injuries {
     width: 80%;
     margin: 0 auto;
 }
 
-.mew {
+.injury {
     margin-bottom: 1.5em; 
 }
 
-.mew-content {
+.injury-content {
     /* margin: 0 auto; */
     margin-bottom: 0;
     display: block;
 }
 
-.mew-header-content {
+.injury-header-content {
     display: inline;
 }
 
-#mew-name {
+#injury-name {
     font-weight: bold;
 }
 
-.mew-button {
+.injury-button {
     display: inline;
     margin-right: 0.8em;
 }
 
-.mew-header-secondary-content, .mew-button {
+.injury-header-secondary-content, .injury-button {
     color: rgb(168, 168, 168);
 }
 
-.mew-edit-button {
+.injury-edit-button {
     display: inline;
     margin-right: 0.8em;
 }
