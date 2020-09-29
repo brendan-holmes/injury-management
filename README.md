@@ -7,6 +7,8 @@ Features:
 - delete post button
 - edit post button
 
+![Screenshot](https://raw.githubusercontent.com/brendan-holmes/twitter-clone-code-garden-tutorial/master/screenshot.PNG)
+
 ## Todo
 
 ### Features
