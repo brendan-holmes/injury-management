@@ -23,3 +23,7 @@ Content-Type: application/json
     "name": "Name",
     "password": "Password"
 }
+
+###
+
+GET http://localhost:5000/

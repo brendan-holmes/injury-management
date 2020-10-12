@@ -191,13 +191,8 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
     res.render(path.join(__dirname, 'client', './views/register.ejs'));
 })
 
-app.get('/', checkAuthenticated, function(req, res) {
-    // if (user == null) {
-    //     res.redirect('/login');
-    // } else {
-    //     res.render(path.join(__dirname, 'client', './views/index.ejs'));
-    // }
-    
+app.get('/', checkAuthenticated, function(req, res) {    
+    console.log(`Inside the \'/\' route. req.user: ${req.user}`);
     res.render(path.join(__dirname, 'client', './views/index.ejs'), { name: req.user.name });
 });
 
@@ -210,7 +205,30 @@ function checkAuthenticated(req, res, next) {
         return next();
     }
 
-    return res.redirect('/login');
+    // Automatically sign in to dev account
+    if(process.env.NODE_ENV !== 'production' &&
+        process.env.USE_DEV_ACCOUNT === 'true') {
+            req.body.email = "dev@dev";
+            req.body.password = "dev";
+            passport.authenticate('local', (error, user, info) => {
+                if (error) {
+                        console.log(`Error doing automatic dev login. Error: ${error}`);
+                        res.status(401).send(error);
+                    } else if (!user) {
+                        console.log(`Error doing automatic dev login. Info: ${info}`);
+                        res.status(401).send(info);
+                    } else {
+                        // success condition
+                        req.user = user;
+                    if(!req.user) {
+                        return res.status(403).send({message: "User is not defined"});
+                    }
+                    return next();
+                }
+            })(req, res);
+    } else {
+        return res.redirect('/login');
+    }
 }
 
 function checkNotAuthenticated(req, res, next) {

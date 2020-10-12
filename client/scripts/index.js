@@ -27,6 +27,8 @@ function listAllInjuries () {
 form.addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(form);
+
+    // Use logged in name instead of label name
     const name = formData.get('name');
     const content = formData.get('content');
 
