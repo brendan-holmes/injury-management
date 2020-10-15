@@ -2,12 +2,20 @@ let imgSrc = "https://i.pinimg.com/originals/d1/57/26/d157261126e10cd2c3e020aad7
 let imgWidth = 618;
 let imgHeight = 515;
 
-var canvas = document.getElementById("canvas1");
-canvas.width  = imgWidth;
-canvas.height = imgHeight;
+var canvasElements = document.querySelectorAll("canvas");
 
-var ctx = canvas.getContext("2d");
-drawImage(ctx, imgSrc);
+canvasElements.forEach(canvasElement => {   
+    canvasElement.width  = imgWidth; // html property, so needs to be an int
+    canvasElement.height = imgHeight;
+});
+
+var canvasSpacer = document.querySelector("#canvas-spacer");
+canvasSpacer.style.width  = `${imgWidth}px`; // css property, so needs to be a string
+canvasSpacer.style.height = `${imgHeight}px`;
+
+var canvasDiagramLayer = document.querySelector("#canvas-diagram-layer");
+var diagramCtx = canvasDiagramLayer.getContext("2d");
+drawImage(diagramCtx, imgSrc);
 
 function drawCircle(ctx, centreCoord, radius) {
     ctx.beginPath();
@@ -33,12 +41,20 @@ function drawPoint(ctx, centreCoord) {
 
 function drawImage(ctx, imgSrc) {
     var logoImg = new Image();
-    logoImg.onload = () => ctx.drawImage(logoImg, 10, 10);
+    logoImg.onload = () => ctx.drawImage(logoImg, 0, 0);
     logoImg.src = imgSrc;
 }
 
-canvas.addEventListener("click", (e) => {
+function clearCanvas(ctx, canvas) {
     var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+}
+
+var canvasDrawLayer = document.querySelector("#canvas-draw-layer");
+canvasDrawLayer.addEventListener("click", (e) => {
+    var ctx = canvasDrawLayer.getContext("2d");
+    clearCanvas(ctx, canvasDrawLayer);
+
     var rect = e.target.getBoundingClientRect();
     var mouseX = e.clientX - rect.left; //x position within the element.
     var mouseY = e.clientY - rect.top;  //y position within the element.

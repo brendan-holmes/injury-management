@@ -191,8 +191,7 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
     res.render(path.join(__dirname, 'client', './views/register.ejs'));
 })
 
-app.get('/', checkAuthenticated, function(req, res) {    
-    console.log(`Inside the \'/\' route. req.user: ${req.user}`);
+app.get('/', checkAuthenticated, function(req, res) {
     res.render(path.join(__dirname, 'client', './views/index.ejs'), { name: req.user.name });
 });
 

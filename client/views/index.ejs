@@ -24,12 +24,21 @@
         <h1 class="title">Aegle - Injury Management for Athletes</h1>
     </header>
     <main>
-        <div class="canvas-container">
-            <canvas id="canvas1"></canvas>
+        <div class="canvas-stack" id="canvas-stack">
+            <div class="canvas-layer">
+                <div class="canvas-container">
+                    <canvas id="canvas-diagram-layer"></canvas>
+                </div>
+            </div>
+            <div class="canvas-layer">
+                <div class="canvas-container">
+                    <canvas id="canvas-draw-layer"></canvas>
+                </div>
+            </div>
+            <div id="canvas-spacer"></div>
         </div>
         <form class="injury-form">
-            <label for="name">Name</label>
-            <input class="u-full-width" type="text" id="name" name="name" required>
+            <input class="u-full-width" type="hidden" id="name" name="name" value=<%= name %>>
             <label for="content">Injury</label>
             <textarea class="u-full-width" name="content" id="content" cols="30" rows="10" required></textarea>
             <button class="button-primary">Send your Injury 😹</button>
