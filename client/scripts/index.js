@@ -1,5 +1,6 @@
 import {InjuryComponent} from './InjuryComponent.js';
 import {Api} from './Api.js';
+import {BodyDiagram} from './BodyDiagram.js';
 
 const form = document.querySelector('.injury-form');
 const loadingElement = document.querySelector('.loading');
@@ -11,6 +12,7 @@ const showLoadingElement = () => loadingElement.style.display = '';
 const hideLoadingElement = () => loadingElement.style.display = 'none';
 
 const api = new Api();
+const bodyDiagram = new BodyDiagram();
 
 function listAllInjuries () {
     injuriesElement.innerHTML = '';
@@ -19,6 +21,7 @@ function listAllInjuries () {
             hideLoadingElement();
             injuries.reverse();
             injuries.forEach(injury => {
+                bodyDiagram.drawMarker(injury.bodyDiagramCoordinates)
                 injuriesElement.append(new InjuryComponent(injury, api, listAllInjuries).getElement());
             });
         });
@@ -31,10 +34,12 @@ form.addEventListener('submit', (event) => {
     // Use logged in name instead of label name
     const name = formData.get('name');
     const content = formData.get('content');
+    const bodyDiagramCoordinates = JSON.parse(sessionStorage.getItem('body-diagram-coordinates'));
 
     const injury = {
         name,
-        content
+        content,
+        bodyDiagramCoordinates
     };
 
     hideForm();
@@ -44,7 +49,7 @@ form.addEventListener('submit', (event) => {
 
     api.postInjury(injury)
         .then(createdInjury => {
-            console.log(createdInjury);
+            console.log(JSON.stringify(createdInjury));
             form.reset();
             showForm();
             listAllInjuries();

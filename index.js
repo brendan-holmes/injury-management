@@ -74,6 +74,7 @@ app.post('/api/injuries', [
         const injury = {
             name: filter.clean(req.body.name.toString()),
             content: filter.clean(req.body.content.toString()),
+            bodyDiagramCoordinates: req.body.bodyDiagramCoordinates,
             created: new Date()
         };
 
@@ -118,6 +119,7 @@ app.put('/api/injuries/:id', (req, res) => {
     const injury = {
         name: filter.clean(req.body.name.toString()),
         content: filter.clean(req.body.content.toString()),
+        bodyDiagramCoordinates: req.body.bodyDiagramCoordinates.toString(),
         created: body.created.toString()
     };
 

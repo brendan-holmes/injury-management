@@ -30,7 +30,7 @@
     margin-bottom: 1.5em; 
 }
 
-.injury-content {
+.injury-content, .body-diagram-location {
     /* margin: 0 auto; */
     margin-bottom: 0;
     display: block;

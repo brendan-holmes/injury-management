@@ -28,7 +28,7 @@ export class InjuryComponent {
         date.setAttribute('class', 'injury-header-content injury-header-secondary-content')
         date.textContent = new DateFormatter(this.injury.created).getFormattedDateShort();
         injuryHeaderDiv.appendChild(date);
-
+        
         const content = document.createElement('p');
         content.setAttribute('class', 'injury-content')
         content.textContent = this.injury.content;
