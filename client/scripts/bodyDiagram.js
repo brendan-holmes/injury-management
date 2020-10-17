@@ -1,5 +1,65 @@
+import {InjuryComponent} from './InjuryComponent.js';
+
 export class BodyDiagram {
-    constructor() {
+    constructor(api) {
+        this.api = api;
+        this.init();
+        this.initCanvas();
+        this.initForm();
+        this.initInjuryList();
+        this.injuries = [];
+    }
+
+    init() {
+        this.loadingElement = document.querySelector('.loading');
+        this.injuriesElement = document.querySelector('.injuries');
+
+        this.showLoadingElement = () => this.loadingElement.style.display = '';
+        this.hideLoadingElement = () => this.loadingElement.style.display = 'none';
+    }
+
+    initForm (){
+        this.showForm = () => form.style.display = '';
+        this.hideForm = () => form.style.display = 'none';
+        this.form = document.querySelector('.injury-form');
+        const form = document.querySelector('.injury-form');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+
+            // Use logged in name instead of label name
+            const name = formData.get('name');
+            const content = formData.get('content');
+            const bodyDiagramCoordinates = JSON.parse(sessionStorage.getItem('body-diagram-coordinates'));
+
+            const injury = {
+                name,
+                content,
+                bodyDiagramCoordinates
+            };
+
+            this.hideForm();
+            this.showLoadingElement();
+
+            console.log('Posting injury...');
+
+            this.api.postInjury(injury)
+                .then(createdInjury => {
+                    console.log(JSON.stringify(createdInjury));
+                    form.reset();
+                    this.showForm();
+                    this.listAllInjuries();
+                });
+        });
+        this.showForm();
+    }
+
+    initInjuryList() {
+        this.showLoadingElement();
+        this.listAllInjuries();
+    }
+
+    initCanvas() {
         const imgSrc = "https://i.pinimg.com/originals/d1/57/26/d157261126e10cd2c3e020aad78b6d1e.jpg";
         const imgWidth = 618;
         const imgHeight = 515;
@@ -17,8 +77,8 @@ export class BodyDiagram {
         
         this.drawImage(imgSrc);
         
-        const canvasDrawLayer = document.querySelector("#canvas-draw-layer");
-        canvasDrawLayer.addEventListener("click", (e) => {
+        this.canvasDrawLayer = document.querySelector("#canvas-draw-layer");
+        this.canvasDrawLayer.addEventListener("click", (e) => {
             //this.clearCanvas(canvasDrawLayer);
         
             const rect = e.target.getBoundingClientRect();
@@ -31,11 +91,12 @@ export class BodyDiagram {
         
             this.drawMarker(coords);
         });
+
+        this.canvasDrawCtx = this.canvasDrawLayer.getContext("2d");
     }
     
     drawCircle(centreCoord, radius) {
-        const canvasDrawLayer = document.querySelector("#canvas-draw-layer");
-        const ctx = canvasDrawLayer.getContext("2d");
+        const ctx = this.canvasDrawCtx;
         ctx.beginPath();
         ctx.arc(centreCoord.x, centreCoord.y, radius, 0, 2 * Math.PI);
         ctx.fillStyle = "rgba(255,0,0,0.1)";
@@ -45,10 +106,8 @@ export class BodyDiagram {
         ctx.stroke();
     }
     
-    // Just a small, filled circle
     drawPoint(centreCoord) {
-        const canvasDrawLayer = document.querySelector("#canvas-draw-layer");
-        const ctx = canvasDrawLayer.getContext("2d");
+        const ctx = this.canvasDrawCtx;
         ctx.beginPath();
         let radius = 2;
         ctx.arc(centreCoord.x, centreCoord.y, radius, 0, 2 * Math.PI);
@@ -73,8 +132,37 @@ export class BodyDiagram {
     }
     
     clearCanvas(canvas) {
-        const canvasDrawLayer = document.querySelector("#canvas-draw-layer");
-        const ctx = canvasDrawLayer.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        const ctx = this.canvasDrawCtx;
+        ctx.clearRect(0, 0, this.canvasDrawLayer.width, this.canvasDrawLayer.height)
+    }
+
+    drawInjuries(injuries) {
+        this.clearCanvas(this.canvasDrawLayer)
+        injuries.forEach(injury => {
+            this.drawMarker(injury.bodyDiagramCoordinates)
+        });
+    }
+
+    listAllInjuries () {
+        this.injuriesElement.innerHTML = '';
+        this.api.getAllInjuries()        
+            .then(injuries => {
+                this.injuries = injuries;
+                this.hideLoadingElement();
+                injuries.reverse();
+                injuries.forEach(injury => {
+                    this.injuriesElement.append(new InjuryComponent(injury, this.api, this.listAllInjuries, (injury) => {this.hideMarkerById(injury)}).getElement());
+                });
+                this.drawInjuries(this.injuries);
+            });
+    }
+
+    hideMarkerById(injuryId) {
+        console.log(`this.injuries in hideMarkerById: ${this.injuries}`);
+        if (this.injuries) {
+            this.clearCanvas();
+            this.injuries = this.injuries.filter(injury => injury._id !== injuryId);
+            this.drawInjuries(this.injuries);
+        }
     }
 }

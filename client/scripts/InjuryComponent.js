@@ -1,10 +1,11 @@
 import {DateFormatter} from './DateFormatter.js';
 
 export class InjuryComponent {
-    constructor(injury, api, refreshInjuries) {
+    constructor(injury, api, refreshInjuries, hideMarkerById) {
         this.injury = injury;
         this.api = api;
         this.refreshInjuries = refreshInjuries;
+        this.hideMarkerId = hideMarkerById;
     }
 
     getElement() {
@@ -43,6 +44,7 @@ export class InjuryComponent {
             console.log('Delete button clicked! Injury id: ', this.injury._id);
             this.api.deleteInjury(this.injury._id);
             injuryDiv.style.display = 'none';
+            this.hideMarkerId(this.injury._id)
         });
         buttons.appendChild(deleteButton);
         const editButton = document.createElement('a');
