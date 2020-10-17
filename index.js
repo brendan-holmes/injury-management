@@ -48,14 +48,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
 
-app.get('/api/injuries', (req, res) => {
-    database.getAllInjuries()
+app.get('/api/injuries', checkAuthenticated, (req, res) => {
+    database.getAllInjuries(req.user.email)
         .then(injuries => {
             res.json(injuries);
         });
 });
 
-app.post('/api/injuries', [
+app.post('/api/injuries', checkAuthenticated, [
     body('name')
         .not().isEmpty(),
     body('content')
@@ -79,18 +79,18 @@ app.post('/api/injuries', [
         };
 
         // insert into DB
-        database.addInjury(injury)
+        database.addInjury(req.user.email, injury)
             .then(createdInjury => {
                 res.json(createdInjury);
             });
 })
 
-app.delete('/api/delete/:id', (req, res) => {
+app.delete('/api/delete/:id', checkAuthenticated, (req, res) => {
     const id = req.params.id;
 
     console.log('Deleting injury with id: ' + id);
 
-    database.removeInjuryById(id)
+    database.removeInjuryById(req.user.email, id)
         .then(data => {
         if (!data) {
             res.status(404).send({
@@ -110,7 +110,7 @@ app.delete('/api/delete/:id', (req, res) => {
     });
 });
 
-app.put('/api/injuries/:id', (req, res) => {
+app.put('/api/injuries/:id', checkAuthenticated, (req, res) => {
     const id = req.params.id;
     const body = req.body
 
@@ -125,7 +125,7 @@ app.put('/api/injuries/:id', (req, res) => {
 
     console.log(injury);
 
-    database.updateInjuryById(id, injury)
+    database.updateInjuryById(req.user.email, id, injury)
         .then(data => {
         if (!data) {
             res.status(404).send({
@@ -151,6 +151,10 @@ app.get('/api/users', (req, res) => {
         });
 });
 
+app.delete('/api/users', (req, res) => {
+    database.removeAllUsers();
+});
+
 app.post('/api/users/login', checkNotAuthenticated, passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true
@@ -166,7 +170,8 @@ app.post('/api/users/register', checkNotAuthenticated, async (req, res) => {
         const user = {
             name: req.body.name, 
             email: req.body.email,
-            password: hashedPassword
+            password: hashedPassword,
+            injuries: []
         };
         database.createUser(user);
         res.redirect('/login'); 

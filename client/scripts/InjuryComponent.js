@@ -41,8 +41,8 @@ export class InjuryComponent {
         deleteIcon.innerHTML = '<i class="far fa-trash-alt"></i>'
         deleteButton.appendChild(deleteIcon);
         deleteButton.addEventListener('click', () => {
-            console.log('Delete button clicked! Injury id: ', this.injury._id);
-            this.api.deleteInjury(this.injury._id);
+            console.log('Delete button clicked! Injury id: ', this.injury.id);
+            this.api.deleteInjury(this.injury.id);
             injuryDiv.style.display = 'none';
             this.hideMarkerId(this.injury._id)
         });
@@ -53,7 +53,7 @@ export class InjuryComponent {
         editIcon.innerHTML = '<i class="fas fa-pencil-alt"></i>'
         editButton.appendChild(editIcon);
         editButton.addEventListener('click', () => {
-            console.log('Edit button clicked! Injury id: ', this.injury._id);
+            console.log('Edit button clicked! Injury id: ', this.injury.id);
             
             // Set injury in edit mode
             // Replace name with text input
