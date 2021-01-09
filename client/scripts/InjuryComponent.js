@@ -41,10 +41,11 @@ export class InjuryComponent {
         deleteIcon.innerHTML = '<i class="far fa-trash-alt"></i>'
         deleteButton.appendChild(deleteIcon);
         deleteButton.addEventListener('click', () => {
-            console.log('Delete button clicked! Injury id: ', this.injury.id);
-            this.api.deleteInjury(this.injury.id);
+            console.log('Delete button clicked! Injury id: ', this.injury.injuryId);
+            this.api.deleteInjury(this.injury.injuryId)
+                .then((result) => console.log(result));
             injuryDiv.style.display = 'none';
-            this.hideMarkerId(this.injury._id)
+            this.hideMarkerId(this.injury.injuryId)
         });
         buttons.appendChild(deleteButton);
         const editButton = document.createElement('a');
@@ -53,7 +54,7 @@ export class InjuryComponent {
         editIcon.innerHTML = '<i class="fas fa-pencil-alt"></i>'
         editButton.appendChild(editIcon);
         editButton.addEventListener('click', () => {
-            console.log('Edit button clicked! Injury id: ', this.injury.id);
+            console.log('Edit button clicked! Injury id: ', this.injury.injuryId);
             
             // Set injury in edit mode
             // Replace name with text input
@@ -79,7 +80,7 @@ export class InjuryComponent {
                 const newInjury = this.injury;
                 newInjury.name = nameInput.value;
                 newInjury.content = contentInput.value;
-                this.api.updateInjury(this.injury._id, newInjury)
+                this.api.updateInjury(this.injury.injuryId, newInjury)
                     .then((res) => {console.log(res)});
                 name.textContent = newInjury.name;
                 content.textContent = newInjury.content;

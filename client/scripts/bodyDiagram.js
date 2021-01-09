@@ -161,7 +161,7 @@ export class BodyDiagram {
         console.log(`this.injuries in hideMarkerById: ${this.injuries}`);
         if (this.injuries) {
             this.clearCanvas();
-            this.injuries = this.injuries.filter(injury => injury.id !== injuryId);
+            this.injuries = this.injuries.filter(injury => injury.injuryId !== injuryId);
             this.drawInjuries(this.injuries);
         }
     }

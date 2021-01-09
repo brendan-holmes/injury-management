@@ -1,4 +1,5 @@
-const monk = require('monk')
+const { MongoClient, ObjectID } = require("mongodb");
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wbxmo.mongodb.net/${process.env.DB_COLL}?retryWrites=true&w=majority`;
 
 class Database {
     // Private fields
@@ -6,39 +7,51 @@ class Database {
     #users; // users
 
     constructor() {
-        const dbUri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wbxmo.mongodb.net/${process.env.DB_COLL}?retryWrites=true&w=majority`;
-        const db = monk(dbUri);
-        db.catch(error => console.log(error));
-        this.users = db.get('users');
+        this.init();
+    }
+
+    async init(){
+        try {
+            const client = new MongoClient(uri, { useUnifiedTopology: true });
+            await client.connect();
+            const database = client.db(process.env.DB_COLL);
+            this.users = database.collection("users");
+            await client.db("admin").command({ ping: 1 });
+            console.log("Connected successfully to database server.");
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     getUserByEmail = async (email) => {
-        return await this.users.findOne({email: email});
+        const query = {email: email};
+        return await this.users.findOne(query);
     };
 
     getUserById = async (id) => {
-        return await this.users.findOne({_id: id})
+        const query = {_id: id};
+        return await this.users.findOne(query);
     };
 
-    getAllUsers() {
-        return this.users
-            .find();
+    getAllUsers = async () => {
+        const users = await this.users.find().toArray();
+        return users;
     }
 
     removeAllUsers() {
-        return this.users
-            .remove();
+        const wasSuccessful = this.users.deleteMany();
+        return wasSuccessful;
     }
 
     createUser(user) {
         return this.users
-            .insert(user);
+            .insertOne(user);
     }
 
     addInjury = async (email, injury) => {
-        injury.id = monk.id();
+        injury.injuryId = ObjectID();
         try {
-            return await this.users.update(
+            return await this.users.updateOne(
                 {email: email}, 
                 {$push: {"injuries": injury}});    
         } catch (error) {
@@ -56,25 +69,48 @@ class Database {
     }
 
     updateInjuryById = async (email, id, injury) => {
-        // NOT TESTED
+        console.log(`Updating injury id: ${id}, email: ${email}`);
+        
         try {
-            return await this.users.update(
-                {email: email, "injuries.id": id}, 
-                {$set: {injury}});    
+            const updatedDocument = await this.users.updateOne(
+                { 
+                    "email": email, 
+                    "injuries.injuryId": ObjectID(id) 
+                },
+                { $set: { "injuries.$.content": injury.content }}
+            );    
+            //console.log(`matchedCount: ${updatedDocument.matchedCount}`);
+            //console.log(`modifiedCount: ${updatedDocument.modifiedCount}`);
+            let wasSuccessful = false;
+            if (updatedDocument) {
+                //console.log(`nModified = ${updatedDocument.result.nModified}`); // troubleshooting
+                wasSuccessful = updatedDocument.result.nModified > 0;
+            }
+            return wasSuccessful;  
         } catch (error) {
             console.log(error);
         }
         return []; // todo: return an error
     }
 
-    removeInjuryById = (email, id) => {
-        // NOT WORKING
+    removeInjuryById = async (email, id) => {
 
-        console.log(`Deleting injury from database with id: ${id}`);
+        console.log(`Deleting injury id: ${id}, email: ${email}`);
 
         try {
-            return this.users.remove (
-                {email: email, "injuries.id": id});    
+            const updatedDocument = await this.users.updateOne(
+                {"email": email},
+                { $pull: { "injuries": { "injuryId": ObjectID(id)}}}
+            );
+
+            //console.log(`matchedCount: ${updatedDocument.matchedCount}`);
+            //console.log(`modifiedCount: ${updatedDocument.modifiedCount}`);
+            let wasSuccessful = false;
+            if (updatedDocument) {
+                //console.log(`nModified = ${updatedDocument.result.nModified}`); // troubleshooting
+                wasSuccessful = updatedDocument.result.nModified > 0;
+            }
+            return wasSuccessful;   
         } catch (error) {
             console.log(error);
         }

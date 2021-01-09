@@ -87,20 +87,17 @@ app.post('/api/injuries', checkAuthenticated, [
 
 app.delete('/api/delete/:id', checkAuthenticated, (req, res) => {
     const id = req.params.id;
-
-    console.log('Deleting injury with id: ' + id);
-
     database.removeInjuryById(req.user.email, id)
-        .then(data => {
-        if (!data) {
-            res.status(404).send({
-            message: `Cannot delete injury with id=${id}. Maybe injury was not found!`
-            });
-        } else {
-            res.send({
-            message: "injury was deleted successfully!"
-            });
-        }
+        .then(wasSuccessful => {
+            if (wasSuccessful) {
+                res.send({
+                    message: "injury was deleted successfully!"
+                    });
+            } else {
+                res.status(404).send({
+                    message: `Cannot delete injury with id=${id}. Maybe injury was not found!`
+                    });
+            }
         })
         .catch(err => {
             console.log(err);
@@ -146,13 +143,19 @@ app.put('/api/injuries/:id', checkAuthenticated, (req, res) => {
 
 app.get('/api/users', (req, res) => {
     database.getAllUsers()
-        .then(users => {
-            res.json(users);
-        });
+        .then(users => res.json(users));
 });
 
 app.delete('/api/users', (req, res) => {
-    database.removeAllUsers();
+    database.removeAllUsers()
+        .then(wasSuccessful => {
+            if (wasSuccessful) {
+                res.status(200).send({message: "Successfully deleted all users."});
+            }
+            else {
+                res.status(500).send({message: "Unable to delete all users."});
+            }
+        });
 });
 
 app.post('/api/users/login', checkNotAuthenticated, passport.authenticate('local', {
@@ -203,7 +206,7 @@ app.get('/', checkAuthenticated, function(req, res) {
 });
 
 app.listen(port, () => {
-    console.log(`Listening on http://localhost:${port}`);
+    console.log(`Listening on http://localhost:${port}...`);
 });
 
 function checkAuthenticated(req, res, next) {
