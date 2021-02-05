@@ -1,6 +1,9 @@
 import {InjuryComponent} from './InjuryComponent.js';
 
 export class BodyDiagram {
+    userSelectionCoords;
+    currentMarkers;
+
     constructor(api) {
         this.api = api;
         this.init();
@@ -30,26 +33,29 @@ export class BodyDiagram {
             // Use logged in name instead of label name
             const name = formData.get('name');
             const content = formData.get('content');
-            const bodyDiagramCoordinates = JSON.parse(sessionStorage.getItem('body-diagram-coordinates'));
 
-            const injury = {
-                name,
-                content,
-                bodyDiagramCoordinates
-            };
-
-            this.hideForm();
-            this.showLoadingElement();
-
-            console.log('Posting injury...');
-
-            this.api.postInjury(injury)
-                .then(createdInjury => {
-                    console.log(JSON.stringify(createdInjury));
-                    form.reset();
-                    this.showForm();
-                    this.listAllInjuries();
-                });
+            if (this.userSelectionCoords != null) {
+                const injury = {
+                    name: name,
+                    content: content,
+                    bodyDiagramCoordinates: this.userSelectionCoords
+                };
+    
+                this.hideForm();
+                this.showLoadingElement();
+    
+                this.api.postInjury(injury)
+                    .then(createdInjury => {
+                        console.log(JSON.stringify(createdInjury));
+                        form.reset();
+                        this.showForm();
+                        this.listAllInjuries();
+                    });
+            }
+            else {
+                // todo: alert user that they need to select a point on the diagram
+                console.log("Please associate the injury with a location on the diagram!");
+            }
         });
         this.showForm();
     }
@@ -78,18 +84,13 @@ export class BodyDiagram {
         this.drawImage(imgSrc);
         
         this.canvasDrawLayer = document.querySelector("#canvas-draw-layer");
-        this.canvasDrawLayer.addEventListener("click", (e) => {
-            //this.clearCanvas(canvasDrawLayer);
-        
+        this.canvasDrawLayer.addEventListener("click", (e) => {        
             const rect = e.target.getBoundingClientRect();
             const mouseX = e.clientX - rect.left; //x position within the element.
             const mouseY = e.clientY - rect.top;  //y position within the element.
-            const coords = {x: mouseX, y: mouseY};
-            console.log(`Mouse clicked. Coords: {x: ${mouseX}, y: ${mouseY}}`);
-            console.log(JSON.stringify(coords));
-            sessionStorage.setItem('body-diagram-coordinates', JSON.stringify(coords));
-        
-            this.drawMarker(coords);
+            this.userSelectionCoords = {x: mouseX, y: mouseY};
+            console.log(`Mouse clicked. Coords: {x: ${mouseX}, y: ${mouseY}}`);    
+            this.addMarker(this.userSelectionCoords);
         });
 
         this.canvasDrawCtx = this.canvasDrawLayer.getContext("2d");
@@ -127,20 +128,43 @@ export class BodyDiagram {
     }
 
     drawMarker(coords) {
-        this.drawPoint(coords, 2, true)
-        this.drawCircle(coords, 20)
+        if (coords !== null) {
+            this.drawPoint(coords, 2, true)
+            this.drawCircle(coords, 20)    
+        }
+        else {
+            console.log("[DEBUG] Cannot draw marker, coordinates are null.");
+        }
     }
-    
+   
     clearCanvas(canvas) {
         const ctx = this.canvasDrawCtx;
         ctx.clearRect(0, 0, this.canvasDrawLayer.width, this.canvasDrawLayer.height)
     }
 
     drawInjuries(injuries) {
-        this.clearCanvas(this.canvasDrawLayer)
+        this.clearCanvas(this.canvasDrawLayer);
+        this.currentMarkers = [];
         injuries.forEach(injury => {
-            this.drawMarker(injury.bodyDiagramCoordinates)
+            this.currentMarkers.push(injury.bodyDiagramCoordinates);
         });
+
+        this.currentMarkers.forEach(marker => {
+            this.drawMarker(marker);
+        });
+    }
+
+    addMarker(coords) {
+        this.clearCanvas(this.canvasDrawLayer);
+
+        if (this.currentMarkers === null) {
+            this.currentMarkers = [];
+        }
+        this.currentMarkers.forEach(marker => {
+            this.drawMarker(marker);
+        });
+
+        this.drawMarker(coords);
     }
 
     listAllInjuries () {

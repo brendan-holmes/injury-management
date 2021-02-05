@@ -70,7 +70,6 @@ app.post('/api/injuries', checkAuthenticated, [
                 message: 'Name and Content are required!'
             })
         }
-
         const injury = {
             name: filter.clean(req.body.name.toString()),
             content: filter.clean(req.body.content.toString()),
