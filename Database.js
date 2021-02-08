@@ -29,7 +29,7 @@ class Database {
     };
 
     getUserById = async (id) => {
-        const query = {_id: id};
+        const query = {_id: ObjectID(id)};
         return await this.users.findOne(query);
     };
 
