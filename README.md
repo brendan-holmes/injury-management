@@ -3,11 +3,14 @@
 Uses Express, MongoDB, NodeJS, no front-end frameworks.
 
 Features:
-- User authentication using passport and bcrypt
+- Sign up and create an account
+- User authentication using passportJS and bcrypt
+- Create markers to show injury locations
+- add a description
 - delete post button
 - edit post button
 
-(Screenshot placeholder)
+![screenshot](https://raw.githubusercontent.com/brendan-holmes/injury-management/master/screenshotNew.PNG)
 
 ## Todo
 
