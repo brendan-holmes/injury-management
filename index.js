@@ -48,6 +48,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
 
+// Serve any static files
+app.use(express.static(path.join(__dirname, 'client')));
+
 app.get('/api/injuries', checkAuthenticated, (req, res) => {
     database.getAllInjuries(req.user.email)
         .then(injuries => {
@@ -187,9 +190,6 @@ app.delete('/api/users/logout', (req, res) => {
     req.logOut();
     res.redirect('/login');
 });
-
-// Serve any static files
-app.use(express.static(path.join(__dirname, 'client')));
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
     res.render(path.join(__dirname, 'client', './views/login.ejs'));
