@@ -60,8 +60,7 @@ export class BodyDiagram {
                     });
             }
             else {
-                // todo: alert user that they need to select a point on the diagram
-                console.log("Please associate the injury with a location on the diagram!");
+                alert("Please associate the injury with a location on the diagram.")
             }
         });
 
