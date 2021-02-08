@@ -209,7 +209,9 @@ app.listen(port, () => {
 });
 
 function checkAuthenticated(req, res, next) {
+    console.log(`[DEBUG] Checking user is authenticated.`);
     if(req.isAuthenticated()) {
+        console.log(`[DEBUG] User is authenticated.`);
         return next();
     }
 
@@ -235,14 +237,19 @@ function checkAuthenticated(req, res, next) {
                 }
             })(req, res);
     } else {
+        console.log(`[DEBUG] User is not authenticated.`);
         return res.redirect('/login');
     }
 }
 
 function checkNotAuthenticated(req, res, next) {
+    console.log(`[DEBUG] Checking user is not authenticated.`);
+    
     if(req.isAuthenticated()) {
+        console.log(`[DEBUG] User is authenticated.`);
         return res.redirect('/');    
     }
 
+    console.log(`[DEBUG] User is not authenticated.`);
     return next();
 }
