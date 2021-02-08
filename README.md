@@ -10,7 +10,7 @@ Features:
 - delete post button
 - edit post button
 
-![screenshot](https://raw.githubusercontent.com/brendan-holmes/injury-management/master/screenshot.PNG)
+![screenshot](https://raw.githubusercontent.com/brendan-holmes/injury-management/master/screenshotNew.PNG)
 
 ## Todo
 
