@@ -1,6 +1,6 @@
 .title {
-    text-align: center;
-    font-size: 30px;
+    float: left;
+    font-size: 20px;
 }
 
 .secondary-title {
@@ -12,9 +12,12 @@
     padding-left: 0;
 }
 
-.injury-form, .failure-flash {
+.injury-form-container {
     width: 50%;
     margin: 0 auto;
+}
+
+.injury-form, .failure-flash {
 }
 
 .loading {
@@ -69,6 +72,12 @@
 .nav-item {
     /* text-align: right; */
     display: inline;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.signed-in {
+    font-size: 20px;
 }
 
 canvas {

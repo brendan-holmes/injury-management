@@ -3,6 +3,7 @@ import {InjuryComponent} from './InjuryComponent.js';
 export class BodyDiagram {
     userSelectionCoords;
     currentMarkers;
+    isInAddNewMode = false;
 
     constructor(api) {
         this.api = api;
@@ -22,13 +23,18 @@ export class BodyDiagram {
     }
 
     initForm (){
-        this.showForm = () => form.style.display = '';
-        this.hideForm = () => form.style.display = 'none';
         this.form = document.querySelector('.injury-form');
-        const form = document.querySelector('.injury-form');
-        form.addEventListener('submit', (event) => {
+        this.addNewInjuryButton = document.querySelector('#add-new-injury-button');
+        this.cancelButton = document.querySelector('#form-cancel-button');
+
+        this.showForm = () => this.form.style.display = '';
+        this.hideForm = () => this.form.style.display = 'none';
+        this.showAddNewInjuryButton = () => this.addNewInjuryButton.style.display = '';
+        this.hideAddNewInjuryButton = () => this.addNewInjuryButton.style.display = 'none';
+        
+        this.form.addEventListener('submit', (event) => {
             event.preventDefault();
-            const formData = new FormData(form);
+            const formData = new FormData(this.form);
 
             // Use logged in name instead of label name
             const name = formData.get('name');
@@ -47,8 +53,9 @@ export class BodyDiagram {
                 this.api.postInjury(injury)
                     .then(createdInjury => {
                         console.log(JSON.stringify(createdInjury));
-                        form.reset();
-                        this.showForm();
+                        this.form.reset();
+                        this.isInAddNewMode = false;
+                        this.showAddNewInjuryButton();
                         this.listAllInjuries();
                     });
             }
@@ -57,7 +64,26 @@ export class BodyDiagram {
                 console.log("Please associate the injury with a location on the diagram!");
             }
         });
-        this.showForm();
+
+        this.addNewInjuryButton.addEventListener('click', (event) => {
+            this.isInAddNewMode = true;
+            this.hideAddNewInjuryButton();
+            this.showForm();
+        });
+
+        this.cancelButton.addEventListener('click', (event) => {
+            this.isInAddNewMode = false;
+            this.showAddNewInjuryButton();
+            this.hideForm();
+
+            // redraw
+            this.listAllInjuries();
+            this.form.reset();
+            this.userSelectionCoords = null;
+        })
+        
+        this.hideForm();
+        this.showAddNewInjuryButton();
     }
 
     initInjuryList() {
@@ -66,9 +92,9 @@ export class BodyDiagram {
     }
 
     initCanvas() {
-        const imgSrc = "https://i.pinimg.com/originals/d1/57/26/d157261126e10cd2c3e020aad78b6d1e.jpg";
-        const imgWidth = 618;
-        const imgHeight = 515;
+        const imgSrc = '../resources/body-front-and-back.png';
+        const imgWidth = 450;
+        const imgHeight = 550;
         
         const canvasElements = document.querySelectorAll("canvas");
         
@@ -84,13 +110,15 @@ export class BodyDiagram {
         this.drawImage(imgSrc);
         
         this.canvasDrawLayer = document.querySelector("#canvas-draw-layer");
-        this.canvasDrawLayer.addEventListener("click", (e) => {        
-            const rect = e.target.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left; //x position within the element.
-            const mouseY = e.clientY - rect.top;  //y position within the element.
-            this.userSelectionCoords = {x: mouseX, y: mouseY};
-            console.log(`Mouse clicked. Coords: {x: ${mouseX}, y: ${mouseY}}`);    
-            this.addMarker(this.userSelectionCoords);
+        this.canvasDrawLayer.addEventListener("click", (e) => {
+            if (this.isInAddNewMode) {
+                const rect = e.target.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left; //x position within the element.
+                const mouseY = e.clientY - rect.top;  //y position within the element.
+                this.userSelectionCoords = {x: mouseX, y: mouseY};
+                console.log(`Mouse clicked. Coords: {x: ${mouseX}, y: ${mouseY}}`);    
+                this.addMarker(this.userSelectionCoords);
+            }        
         });
 
         this.canvasDrawCtx = this.canvasDrawLayer.getContext("2d");

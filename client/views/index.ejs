@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Aegle - Injury Management for Athletes</title>
+    <title>Aegle - Injury Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
@@ -16,12 +16,13 @@
 <body>
     <header>
         <div class="nav">
-            <p class="nav-item">Signed in as <%= name %></p> 
+            <p class="nav-item title">Aegle - Injury Management</h1>
+            <p class="nav-item signed-in">Signed in as <%= name %></p> 
             <form action="/api/users/logout?_method=DELETE" method="POST" class="nav-item">
                 <button type="submit" class="nav-item">Log Out</button>
             </form>
         </div>
-        <h1 class="title">Aegle - Injury Management for Athletes</h1>
+        
     </header>
     <main>
         <div class="canvas-stack" id="canvas-stack">
@@ -37,13 +38,18 @@
             </div>
             <div id="canvas-spacer"></div>
         </div>
-        <form class="injury-form">
-            <input class="u-full-width" type="hidden" id="name" name="name" value=<%= name %>>
-            <label for="content">Injury</label>
-            <textarea class="u-full-width" name="content" id="content" cols="30" rows="10" required></textarea>
-            <button class="button-primary">Save</button>
-        </form>
-        <div class="loading">
+        <div class="injury-form-container">
+            <button id="add-new-injury-button" class="button-primary">Add new injury</button>
+            <form class="injury-form">
+                <input class="u-full-width" type="hidden" id="name" name="name" value=<%= name %>>
+                <p style="font-style: italic;">Choose a location on the diagram, add a description, then press Save.</p>
+                <label for="content">Injury description</label>
+                <textarea class="u-full-width" name="content" id="content" cols="30" rows="10" required></textarea>
+                <button class="button-primary" type="submit">Save</button>
+                <button class="" type="button" id="form-cancel-button">Cancel</button>
+            </form>
+        </div>
+            <div class="loading">
             <img src="../resources/loading.gif" alt="">
         </div>
         <div class="injuries">
