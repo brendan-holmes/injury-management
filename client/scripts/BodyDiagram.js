@@ -1,4 +1,5 @@
 import {InjuryComponent} from './InjuryComponent.js';
+import {NoInjuriesComponent} from './NoInjuriesComponent.js';
 
 export class BodyDiagram {
     userSelectionCoords;
@@ -200,11 +201,15 @@ export class BodyDiagram {
             .then(injuries => {
                 this.injuries = injuries;
                 this.hideLoadingElement();
-                injuries.reverse();
-                injuries.forEach(injury => {
-                    this.injuriesElement.append(new InjuryComponent(injury, this.api, this.listAllInjuries, (injury) => {this.hideMarkerById(injury)}).getElement());
-                });
                 this.drawInjuries(this.injuries);
+                if (undefined !== injuries && injuries.length && injuries.length > 0) {   
+                    injuries.reverse();
+                    injuries.forEach(injury => {
+                        this.injuriesElement.append(new InjuryComponent(injury, this.api, this.listAllInjuries, (injury) => {this.hideMarkerById(injury)}).getElement());
+                    });
+                } else {
+                    this.injuriesElement.append(new NoInjuriesComponent().getElement());
+                }
             });
     }
 
