@@ -1,0 +1,38 @@
+.injury {
+    margin-bottom: 1.5em; 
+}
+
+.injury-content, .body-diagram-location {
+    /* margin: 0 auto; */
+    margin-bottom: 0;
+    display: block;
+}
+
+.injury-header-item {
+    display: inline;
+}
+
+.injury-header-bold {
+    font-weight: bold;
+}
+
+.injury-header-grey, .injury-button {
+    color: rgb(168, 168, 168);
+}
+
+.injury-button {
+    margin-right: 0.8em;
+}
+
+.injury-button:hover {
+    filter: brightness(0.5);
+}
+
+.injury-update-field {
+    display: block;
+}
+
+.injury-edit-button {
+    /* display: inline; */
+    margin-right: 0.8em;
+}

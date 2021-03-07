@@ -1,0 +1,15 @@
+.nav {
+    margin-top: 1em;
+    text-align: right;
+}
+
+.nav-item {
+    /* text-align: right; */
+    display: inline;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.signed-in {
+    font-size: 20px;
+}

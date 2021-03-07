@@ -1,0 +1,46 @@
+.injury-form-container {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.field-label {
+    margin-right: 1em;
+}
+
+.submit, .submit:hover {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.submit:hover {
+    filter: brightness(0.5);
+}
+
+.cancel, .cancel:hover {
+    font-size: 1em;
+    background-color: transparent;
+    border-color: transparent;
+    float: right;
+}
+
+.cancel:hover {
+    filter: brightness(0.5);
+}
+
+.field-text {
+    display: inline;
+    font-weight: normal;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+input {
+    width: 100%;
+    box-sizing: border-box;
+}

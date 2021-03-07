@@ -1,0 +1,40 @@
+canvas {
+    /**
+     * Set transparent to let any other canvases render through
+     */
+    background-color: transparent;
+}
+
+.canvas-stack {
+    /* text-align: center; */
+    /* display: inline-block; */
+    /* position: relative; */
+    /* border: 2px solid pink; */
+}
+
+.canvas-layer {
+    position: absolute;
+    left: 50%;
+    /* border: 2px solid green; */
+}
+
+.canvas-container {
+    position: relative;
+    left: -50%;
+    /* border: 2px solid green; */
+}
+
+#canvas-diagram-layer {
+    z-index: 1;
+    /* border: 2px solid red; */
+}
+
+#canvas-draw-layer {
+    z-index: 2;
+    /* border: 2px solid green; */
+}
+
+#canvas-spacer {
+    clear:both;
+    z-index: 0;
+}

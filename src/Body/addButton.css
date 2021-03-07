@@ -1,0 +1,26 @@
+.circle {
+    background: #599cf3;
+    border-color: #599cf3;
+    border-radius: 50%;
+    color: #fff;
+    height: 3em;
+    position: relative;
+    width: 3em;
+  }
+  
+  .circle-icon {
+    fill: currentColor;
+    height: 50%;
+    left: 50%;
+    position: absolute;
+    stroke: currentColor;
+    stroke-width: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+  }
+
+  .circle:hover {
+      background: #8bbcfd;
+      border-color: #8bbcfd;
+  }
