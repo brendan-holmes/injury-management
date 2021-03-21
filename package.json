@@ -41,10 +41,9 @@
     "typescript": "^4.2.3"
   },
   "scripts": {
-    "build": "npm run transpile:server && npm run build:client",
     "build:client": "react-scripts build",
     "transpile:server": "tsc --project tsconfig.server.json",
-    "dev": "nodemon ./build/transpiled/server/index.js"
+    "dev": "nodemon ./transpiled/server/index.js"
   },
   "eslintConfig": {
     "extends": [

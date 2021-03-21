@@ -9,6 +9,7 @@
 
 # production
 /build
+/transpiled
 
 # misc
 .DS_Store

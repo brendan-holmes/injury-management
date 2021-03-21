@@ -8,6 +8,10 @@
     display: block;
 }
 
+.injury-content-label {
+    color: rgb(168, 168, 168);
+}
+
 .injury-header-item {
     display: inline;
 }

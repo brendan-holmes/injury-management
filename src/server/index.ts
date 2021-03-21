@@ -75,11 +75,18 @@ apiRouter.post('/injuries', checkAuthenticated, [
             })
         }
 
-        const injury = {
-            bodyPart: req.body.bodyPart,
-            bodyDiagramCoordinates: req.body.bodyDiagramCoordinates,
-            created: new Date()
-        }
+        const injury: Injury = {
+            bodyPart: req.body.bodyPart.toString(),
+            bodyDiagramCoordinates: req.body.bodyDiagramCoordinates.toString(),
+            created: new Date(),
+            side: req.body.side.toString(),
+            painLevel: req.body.painLevel.toString(),
+            firstOccurrence: req.body.firstOccurrence.toString(),
+            frequencyOfSymptoms: req.body.frequencyOfSymptoms.toString(),
+            cause: req.body.cause.toString(),
+            triggers: req.body.triggers.toString(),
+            treatment: req.body.treatment.toString(),
+        };
 
         // insert into DB
         database.addInjury(req.user.email, injury)
@@ -116,10 +123,17 @@ apiRouter.put('/injuries/:id', checkAuthenticated, (req: any, res: any) => {
 
     console.log('Updating injury with id: ' + id + body);
 
-    const injury = {
+    const injury: Injury = {
         bodyPart: req.body.bodyPart.toString(),
         bodyDiagramCoordinates: req.body.bodyDiagramCoordinates.toString(),
-        created: body.created.toString()
+        created: new Date(),
+        side: req.body.side.toString(),
+        painLevel: req.body.painLevel.toString(),
+        firstOccurrence: req.body.firstOccurrence.toString(),
+        frequencyOfSymptoms: req.body.frequencyOfSymptoms.toString(),
+        cause: req.body.cause.toString(),
+        triggers: req.body.triggers.toString(),
+        treatment: req.body.treatment.toString(),
     };
 
     console.log(injury);
@@ -208,7 +222,7 @@ apiRouter.get('/', function(req: any, res: any) {
     res.send('Welcome to our API!');
 });
 
-appRouter.use(express.static(path.join(__dirname, '../../')));
+appRouter.use(express.static(path.join(__dirname, '../../build')));
 appRouter.get('/', function (req: any, res: any) {
     res.sendFile('index.html');
   });

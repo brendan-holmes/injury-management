@@ -15,15 +15,15 @@ interface InjuryFormProps {
 export const InjuryForm = (props: InjuryFormProps) => {
 
     const fieldNames = [
-        "Body Part",
-        "Side",
-        "Pain level",
-        "First occured", 
-        "Triggers",
-        "Frequency",
-        "Affected muscle(s)",
-        "Affected bone(s)",
-        "Physio exercises"]
+        "Body part",            //0
+        "Side",                 //1
+        "Pain level",           //2
+        "First occurred",       //3
+        "Frequency of symptoms",//4
+        "Cause",                //5
+        "Treatment",            //6
+        "Triggers",             //7
+    ]
 
     const [formValues, setFormValues] = useState(fieldNames.map(() => ''));
 
@@ -37,6 +37,13 @@ export const InjuryForm = (props: InjuryFormProps) => {
             api.postInjury({
                 bodyPart: formValues[0], //bodyPart,
                 bodyDiagramCoordinates: props.userSelectionCoords,
+                side: formValues[1],
+                painLevel: formValues[2],
+                firstOccurrence: new Date(formValues[3]),
+                frequencyOfSymptoms: formValues[4],
+                cause: formValues[5],
+                treatment: formValues[6],
+                triggers: formValues[7],
             }).then( () => props.setIsEditMode(false) );    
         } else {
             alert("Please add description and location on diagram.")

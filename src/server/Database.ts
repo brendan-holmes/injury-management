@@ -72,7 +72,16 @@ export class Database {
                     "email": email, 
                     "injuries.injuryId": ObjectID(id) 
                 },
-                { $set: { "injuries.$.bodyPart": injury.bodyPart }}
+                { $set: { 
+                    "injuries.$.bodyPart": injury.bodyPart,
+                    "injuries.$.side": injury.side,
+                    "injuries.$.painLevel": injury.painLevel,
+                    "injuries.$.firstOccurrence": injury.firstOccurrence,
+                    "injuries.$.frequencyOfSymptoms": injury.frequencyOfSymptoms,
+                    "injuries.$.cause": injury.cause,
+                    "injuries.$.treatment": injury.treatment,
+                    "injuries.$.triggers": injury.triggers,
+             }}
             );
             let wasSuccessful = false;
             if (updatedDocument) {
