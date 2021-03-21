@@ -1,3 +1,5 @@
+import { Injury, User } from "../types";
+
 if (process.env.NODE_ENV !== 'production') {
     // Use .env file in development, and in production environment variables
     // are saved manually
@@ -8,8 +10,7 @@ const subdomain                 = require('express-subdomain');
 const express                   = require('express');
 const cors                      = require('cors');
 const {body, validationResult}  = require('express-validator');
-const { Database }              = require('./Database.js');
-const Filter                    = require('bad-words');
+const { Database }              = require('./Database');
 const rateLimit                 = require('express-rate-limit');
 const path                      = require('path');
 const bcrypt                    = require('bcrypt');
@@ -53,9 +54,9 @@ initializePassport(passport, database.getUserByEmail, database.getUserById);
 app.use(passport.initialize());
 app.use(passport.session());
 
-apiRouter.get('/injuries', checkAuthenticated, (req, res) => {
+apiRouter.get('/injuries', checkAuthenticated, (req: any, res: any) => {
     database.getAllInjuries(req.user.email)
-        .then(injuries => {
+        .then((injuries: Injury[]) => {
             res.json({injuries: injuries});
         });
 });
@@ -64,7 +65,7 @@ apiRouter.post('/injuries', checkAuthenticated, [
     body('bodyPart').not().isEmpty(),
     body('bodyDiagramCoordinates').not().isEmpty(),
 ], 
-    (req, res) => {
+    (req: any, res: any) => {
         const errors = validationResult(req);
 
         if(!errors.isEmpty()){
@@ -82,15 +83,15 @@ apiRouter.post('/injuries', checkAuthenticated, [
 
         // insert into DB
         database.addInjury(req.user.email, injury)
-            .then(createdInjury => {
+            .then((createdInjury: Injury) => {
                 res.json(createdInjury);
             });
 })
 
-apiRouter.delete('/delete/:id', checkAuthenticated, (req, res) => {
+apiRouter.delete('/delete/:id', checkAuthenticated, (req: any, res: any) => {
     const id = req.params.id;
     database.removeInjuryById(req.user.email, id)
-        .then(wasSuccessful => {
+        .then((wasSuccessful: boolean) => {
             if (wasSuccessful) {
                 res.send({
                     message: "injury was deleted successfully!"
@@ -101,7 +102,7 @@ apiRouter.delete('/delete/:id', checkAuthenticated, (req, res) => {
                     });
             }
         })
-        .catch(err => {
+        .catch((err: Error) => {
             console.log(err);
             res.status(500).send({
                 message: "Could not delete injury with id=" + id
@@ -109,7 +110,7 @@ apiRouter.delete('/delete/:id', checkAuthenticated, (req, res) => {
     });
 });
 
-apiRouter.put('/injuries/:id', checkAuthenticated, (req, res) => {
+apiRouter.put('/injuries/:id', checkAuthenticated, (req: any, res: any) => {
     const id = req.params.id;
     const body = req.body
 
@@ -124,7 +125,7 @@ apiRouter.put('/injuries/:id', checkAuthenticated, (req, res) => {
     console.log(injury);
 
     database.updateInjuryById(req.user.email, id, injury)
-        .then(data => {
+        .then((data: any) => {
         if (!data) {
             res.status(404).send({
             message: `Cannot update injury with id=${id}. Maybe injury was not found!`
@@ -135,21 +136,21 @@ apiRouter.put('/injuries/:id', checkAuthenticated, (req, res) => {
             });
         }
         })
-        .catch(err => {
+        .catch((err: Error) => {
             res.status(500).send({
-                message: "Could not update injury with id=" + id
+                message: `Could not update injury with id ${id}. ${err}`
             });
         });
 })
 
-apiRouter.get('/users', (req, res) => {
+apiRouter.get('/users', (req: any, res: any) => {
     database.getAllUsers()
-        .then(users => res.json(users));
+        .then((users: User[]) => res.json(users));
 });
 
-apiRouter.delete('/users', (req, res) => {
+apiRouter.delete('/users', (req: any, res: any) => {
     database.removeAllUsers()
-        .then(wasSuccessful => {
+        .then((wasSuccessful: boolean) => {
             if (wasSuccessful) {
                 res.status(200).send({message: "Successfully deleted all users."});
             }
@@ -159,7 +160,7 @@ apiRouter.delete('/users', (req, res) => {
         });
 });
 
-apiRouter.post('/users/login', checkNotAuthenticated, passport.authenticate('local'), (req, res) => {
+apiRouter.post('/users/login', checkNotAuthenticated, passport.authenticate('local'), (req: any, res: any) => {
     if (req.isAuthenticated()) {
         res.status(200).json({message: 'User successfully logged in.', userName: req.user.name});
     } else {
@@ -167,7 +168,7 @@ apiRouter.post('/users/login', checkNotAuthenticated, passport.authenticate('loc
     }
 });
 
-apiRouter.post('/users/checkloggedin', (req, res) => {
+apiRouter.post('/users/checkloggedin', (req: any, res: any) => {
     if (req.isAuthenticated()) {
         res.status(200).json({message: 'User logged in from existing session.', userName: req.user.name});
     } else {
@@ -175,7 +176,7 @@ apiRouter.post('/users/checkloggedin', (req, res) => {
     }
 });
 
-apiRouter.post('/users/register', checkNotAuthenticated, async (req, res) => {
+apiRouter.post('/users/register', checkNotAuthenticated, async (req: any, res: any) => {
     try {
         const numSaltRounds = 10;
         const hashedPassword = await bcrypt.hash(req.body.password, numSaltRounds);
@@ -194,7 +195,7 @@ apiRouter.post('/users/register', checkNotAuthenticated, async (req, res) => {
     }
 })
 
-apiRouter.delete('/users/logout', (req, res) => {
+apiRouter.delete('/users/logout', (req: any, res: any) => {
     if (!req.isAuthenticated()) {
         console.log(`Warning: Calling logout but user is not authenticated.`);
     }
@@ -203,12 +204,12 @@ apiRouter.delete('/users/logout', (req, res) => {
     res.status(200).json({message: 'User logged out.'});
 });
 
-apiRouter.get('/', function(req, res) {
+apiRouter.get('/', function(req: any, res: any) {
     res.send('Welcome to our API!');
 });
 
-appRouter.use(express.static(path.join(__dirname, '../../build/')));
-appRouter.get('/', function (req, res) {
+appRouter.use(express.static(path.join(__dirname, '../../')));
+appRouter.get('/', function (req: any, res: any) {
     res.sendFile('index.html');
   });
 
@@ -218,7 +219,7 @@ app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
 
-function checkAuthenticated(req, res, next) {
+function checkAuthenticated(req: any, res: any, next: any) {
     if(req.isAuthenticated()) {
         return next();
     }
@@ -228,7 +229,7 @@ function checkAuthenticated(req, res, next) {
         process.env.USE_DEV_ACCOUNT === 'true') {
             req.body.email = "dev@dev";
             req.body.password = "dev";
-            passport.authenticate('local', (error, user, info) => {
+            passport.authenticate('local', (error: Error, user: any, info: any) => {
                 if (error) {
                     console.log(`Error doing automatic dev login. Error: ${error}`);
                     res.status(401).send(error);
@@ -249,7 +250,7 @@ function checkAuthenticated(req, res, next) {
     }
 }
 
-function checkNotAuthenticated(req, res, next) {
+function checkNotAuthenticated(req: any, res: any, next: any) {
     if(req.isAuthenticated()) {
         return res.status(403).json({message: 'User is already logged in.'}); // 403 Forbidden
     }

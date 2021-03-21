@@ -1,11 +1,11 @@
-import Nav from './Header/Nav.js';
-import BodyContainer from './Body/BodyContainer.js';
+import { Nav } from './Header/Nav';
+import { BodyContainer } from './Body/BodyContainer';
 import { useState } from 'react';
 
 import './styles.css';
 import './skeleton.min.css';
 
-const App = () => {
+export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
 
@@ -23,5 +23,3 @@ const App = () => {
     </div>
   );
 }
-
-export default App;

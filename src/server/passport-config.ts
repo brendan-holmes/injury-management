@@ -1,8 +1,8 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 
-function initialize(passport, getUserByEmail, getUserById) {
-    const authenticateUser = async (email, password, done) => {
+export function initialize(passport: any, getUserByEmail: any, getUserById: any) {
+    const authenticateUser = async (email: string, password: string, done: any) => {
         const user = await getUserByEmail(email);
 
         if (user === null) {
@@ -23,9 +23,9 @@ function initialize(passport, getUserByEmail, getUserById) {
     // Local Strategy also has option passwordField which defaults to 'password', which is our form input name already
     // "options" of local strategy definition need to correspond to authenticateUser parameters
     passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser));
-    passport.serializeUser((user, done) => {
+    passport.serializeUser((user: any, done: any) => {
         done(null, user._id)})
-    passport.deserializeUser(async (id, done) => {
+    passport.deserializeUser(async (id: string, done: any) => {
         done(null, await getUserById(id))
     })
 }

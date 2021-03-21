@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
-import api from '../api.js';
-import Login from './Login.js';
-import Register from './Register.js';
+import { api } from '../api';
+import { Login } from './Login';
+import { Register } from './Register';
 import './nav.css';
 
-const Nav = (props) => {
+interface NavProps {
+    setIsLoggedIn(isLoggedIn: boolean): void;
+    setUserName(userName: string): void;
+    isLoggedIn: boolean;
+    userName: string;
+}
+
+export const Nav = (props: NavProps) => {
     
     const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
@@ -12,7 +19,7 @@ const Nav = (props) => {
     const handleGoToRegisterWindow = () => { setIsLoggingIn(false); setIsRegistering(true) };
     const handleGoToLoginWindow = () => { setIsLoggingIn(true); setIsRegistering(false) };
     const handleCloseWindow = () => { setIsLoggingIn(false); setIsRegistering(false) };
-    const handleSuccessfulLogin = (userName) => { setIsLoggingIn(false); props.setIsLoggedIn(true); props.setUserName(userName); };
+    const handleSuccessfulLogin = (userName: string) => { setIsLoggingIn(false); props.setIsLoggedIn(true); props.setUserName(userName); };
     const handleSuccessfulRegistration = () => { console.log("Successfully created new account."); setIsLoggingIn(true); setIsRegistering(false); }
     const handleSuccessfulLogOut = () => { props.setIsLoggedIn(false); props.setUserName(''); };
     
@@ -29,9 +36,9 @@ const Nav = (props) => {
 
     const checkLoggedIn = () => {
         api.checkLoggedIn()
-            .then(response => { 
+            .then((response: Response) => { 
                 response.json()
-                    .then(data => {
+                    .then((data: any) => {
                         console.log(data.message);
                         if (data.userName) {
                             handleSuccessfulLogin(data.userName);
@@ -39,7 +46,7 @@ const Nav = (props) => {
                             handleSuccessfulLogOut();
                         }
                     })
-            }).catch(error => console.log(error));
+            }).catch((error: Error) => console.log(error));
     };
 
     // Only check if user is already logged in on initialization
@@ -51,7 +58,10 @@ const Nav = (props) => {
             <p className="nav-item signed-in">{ props.isLoggedIn ? `${props.userName}` : 'Not signed in'}</p> 
             <button className="nav-item" onClick={
                 props.isLoggedIn 
-                    ? () => api.logOut().then(isSuccess => {isSuccess ? handleSuccessfulLogOut(isSuccess) : alert('Unable to logout at this time.')}) 
+                    ? () => api.logOut()
+                                    .then((response: Response) => {response.ok ? handleSuccessfulLogOut() : console.log('Unable to logout at this time.')})
+                                    .catch((error: Error) => {console.log(`Unable to logout at this time. ${error}`);
+                                    })
                     : () => setIsLoggingIn(true)
                 }>
                 { props.isLoggedIn ? 'Log out' : 'Login'}
@@ -62,6 +72,3 @@ const Nav = (props) => {
         </div>
     );
 }
-
-export default Nav;
-

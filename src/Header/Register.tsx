@@ -1,23 +1,29 @@
-import Modal from './Modal.js'
+import { Modal } from './Modal'
 import './Login.css';
-import api from '../api.js';
+import { api } from '../api';
 
-const Register = (props) => {
+interface RegisterProps {
+    handleSuccessfulRegistration(): void; 
+    handleCloseWindow(): void;
+    goToLoginWindow(): void;
+}
 
-    const handleSubmit = (fieldValues) => {
+export const Register = (props: RegisterProps) => {
+
+    const handleSubmit = (fieldValues: string[]) => {
         if (fieldValues !== undefined && fieldValues.length === 3) {
             api.register(fieldValues[0], fieldValues[1], fieldValues[1])
-                .then(response => { if (response.ok) {
-                    response.json().then( data => {
+                .then((response: Response) => { if (response.ok) {
+                    response.json().then( (data: any) => {
                     props.handleSuccessfulRegistration();
                     console.log(data.message);
                     });
                 } else {
-                    response.json().then( data => {
+                    response.json().then( (data: any) => {
                         console.log(data.message);
                         alert("Error registering user");
                     })
-                }}).catch(error => console.log(error));
+                }}).catch((error: Error) => console.log(error));
         }
         else {
             console.log("Error submitting register form data.");
@@ -36,5 +42,3 @@ const Register = (props) => {
             />
     );
 }
-
-export default Register;

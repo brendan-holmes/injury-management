@@ -9,6 +9,8 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.3",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.2",
     "bad-words": "^3.0.3",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
@@ -32,16 +34,17 @@
     "web-vitals": "^1.1.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "@tsconfig/node12": "^1.0.7",
+    "nodemon": "^2.0.4",
+    "source-map-loader": "^2.0.1",
+    "ts-loader": "^8.0.18",
+    "typescript": "^4.2.3"
   },
   "scripts": {
-    "start": "npm-run-all --parallel watch:server start:web",
-    "start:web": "react-scripts start",
-    "start:server": "node ./src/server/index.js",
-    "watch:server": "nodemon --watch ./src/server/index.js",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "npm run transpile:server && npm run build:client",
+    "build:client": "react-scripts build",
+    "transpile:server": "tsc --project tsconfig.server.json",
+    "dev": "nodemon ./build/transpiled/server/index.js"
   },
   "eslintConfig": {
     "extends": [

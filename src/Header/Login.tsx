@@ -1,19 +1,25 @@
-import Modal from './Modal.js'
+import { Modal } from './Modal'
 import './Login.css';
-import api from '../api.js';
+import { api } from '../api';
 
-const Login = (props) => {
-    const handleSubmit = (fieldValues) => {
+interface LoginProps {
+    handleSuccessfulLogin(userName: string): void;
+    handleCloseWindow(): void;
+    goToRegisterWindow(): void;
+}
+
+export const Login = (props: LoginProps) => {
+    const handleSubmit = (fieldValues: string[]) => {
         if (fieldValues !== undefined && fieldValues.length === 2) {
             api.login(fieldValues[0], fieldValues[1])
-                .then(response => response.json())
-                .then(data => {
+                .then((response: Response) => response.json())
+                .then((data: any) => {
                     if (data.userName) {
                         props.handleSuccessfulLogin(data.userName);
                     } else {
                         console.log(`Unable to login. ${data.message}`);
                     }
-                }).catch(error => console.log(error));
+                }).catch((error: Error) => console.log(error));
         }
         else {
             console.log("Error submitting login form data.");
@@ -32,5 +38,3 @@ const Login = (props) => {
             />
     );
 }
-
-export default Login;

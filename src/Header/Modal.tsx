@@ -1,7 +1,17 @@
 import './Modal.css';
-import ModalForm from './ModalForm.js'
+import { ModalForm } from './ModalForm'
 
-const Modal = (props) => {
+interface ModalProps {
+    handleCloseWindow(): void; 
+    handleSubmit(fieldNames: string[]): void;
+    heading: string;
+    fieldNames: string[];
+    buttonText: string;
+    bottomText: string;
+    onClickBottomText(): void;
+}
+
+export const Modal = (props: ModalProps) => {
     return (
         <>
             <div className="modal-background" onClick={props.handleCloseWindow}>
@@ -20,7 +30,3 @@ const Modal = (props) => {
         </>
     );
 }
-
-
-
-export default Modal;

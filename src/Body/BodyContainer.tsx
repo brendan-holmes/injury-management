@@ -1,19 +1,24 @@
-import Diagram from './Diagram.js';
-import InjuryForm from './InjuryForm.js';
-import InjuryList from './InjuryList.js';
+import { Diagram } from './Diagram';
+import { InjuryForm } from './InjuryForm';
+import { InjuryList } from './InjuryList';
 import { useEffect, useState } from 'react';
-import api from '../api.js';
+import { api } from '../api';
+import { Injury } from '../types';
 
-const BodyContainer = (props) => {
+interface BodyContainerProps {
+    isLoggedIn: boolean;
+}
+
+export const BodyContainer = (props: BodyContainerProps) => {
     const [injuries, setInjuries] = useState([]);
     const [userSelectionCoords, setUserSelectionCoords] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
 
     const getInjuries = () => {
         if (props.isLoggedIn) {            
-            api.getAllInjuries().then(injuries => 
+            api.getAllInjuries().then((injuries: Injury[]) => 
                 {
-                    setInjuries(injuries);
+                    setInjuries(injuries as any);
                 }
             );
         } else {
@@ -31,5 +36,3 @@ const BodyContainer = (props) => {
         </>
     );
 }
-
-export default BodyContainer;

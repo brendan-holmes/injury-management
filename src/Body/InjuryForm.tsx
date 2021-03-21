@@ -1,10 +1,18 @@
 import './injuryForm.css';
-import AddButton from './AddButton.js';
-import api from '../api.js';
+import { AddButton } from './AddButton';
+import { api } from '../api';
 import { useState } from 'react';
-import arrayUtils from '../arrayUtils.js';
+import { arrayUtils } from '../arrayUtils';
+import { Coordinates2D } from '../types';
 
-const Form = (props) => {
+interface InjuryFormProps {
+    setIsEditMode(value: boolean): void;
+    userSelectionCoords: Coordinates2D | null;
+    isLoggedIn: boolean;
+    isEditMode: boolean;
+}
+
+export const InjuryForm = (props: InjuryFormProps) => {
 
     const fieldNames = [
         "Body Part",
@@ -19,7 +27,7 @@ const Form = (props) => {
 
     const [formValues, setFormValues] = useState(fieldNames.map(() => ''));
 
-    const handleChange = (value, index) => {
+    const handleChange = (value: string, index: number) => {
         setFormValues(arrayUtils.replace(formValues, value, index));
       }
 
@@ -28,7 +36,7 @@ const Form = (props) => {
         if (formValues[0] !== '' && undefined !== props.userSelectionCoords && props.userSelectionCoords !== null) {
             api.postInjury({
                 bodyPart: formValues[0], //bodyPart,
-                bodyDiagramCoordinates: props.userSelectionCoords
+                bodyDiagramCoordinates: props.userSelectionCoords,
             }).then( () => props.setIsEditMode(false) );    
         } else {
             alert("Please add description and location on diagram.")
@@ -72,5 +80,3 @@ const Form = (props) => {
         </div>
     );
   };
-  
-  export default Form;

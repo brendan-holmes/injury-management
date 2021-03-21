@@ -1,16 +1,25 @@
 import bodyImage from '../body-front-and-back.png';
-import Canvas from './Canvas.js';
-import drawUtils from './drawUtils.js';
+import { Canvas } from './Canvas';
+import { drawUtils } from './drawUtils';
 import { useState, useEffect } from 'react';
+import { Coordinates2D, Injury } from '../types';
 
-const Diagram = (props) => {
+interface DiagramProps {
+    userSelectionCoords: Coordinates2D | null;
+    injuries: Injury[];
+    isEditMode: boolean;
+    isLoggedIn: boolean;
+    setUserSelectionCoords(userSelectionCoords: any): void;
+}
+
+export const Diagram = (props: DiagramProps) => {
     const [injuryCoords, setInjuryCoords] = useState([]);
 
-    const drawCanvas = (ctx) => {
+    const drawCanvas = (ctx: CanvasRenderingContext2D) => {
         drawUtils.clearCanvas(ctx);
 
         if (undefined !== props.injuries) {
-            var injuriesToDraw = injuryCoords;
+            var injuriesToDraw: any[] = injuryCoords;
             if (props.userSelectionCoords !== null) {
                 injuriesToDraw = [...injuryCoords, ...[props.userSelectionCoords]];
             }   
@@ -20,7 +29,7 @@ const Diagram = (props) => {
         };
     };
 
-    const handleCanvasClick = (e) => {
+    const handleCanvasClick = (e: any) => {
         // if is logged in
         if (props.isEditMode && props.isLoggedIn) {   
             const rect = e.target.getBoundingClientRect();
@@ -31,7 +40,7 @@ const Diagram = (props) => {
         }
     };
 
-    useEffect(() => {setInjuryCoords(props.injuries.map(injury => injury.bodyDiagramCoordinates))}, [props.injuries]);
+    useEffect(() => {setInjuryCoords(props.injuries.map((injury: Injury) => injury.bodyDiagramCoordinates) as any)}, [props.injuries]);
     useEffect(() => {if (!props.isLoggedIn || !props.isEditMode) props.setUserSelectionCoords(null)}, [props.isLoggedIn, props.isEditMode]);
 
     return (
@@ -43,14 +52,10 @@ const Diagram = (props) => {
             </div>
             <div className="canvas-layer">
                 <div className="canvas-container">
-                    <Canvas draw={drawCanvas} onClick={e => handleCanvasClick(e)}/>
+                    <Canvas draw={drawCanvas} handleCanvasClick={handleCanvasClick}/>
                 </div>
             </div>
             <div id="canvas-spacer" style={{width:'450px', height:'550px'}}></div>
         </div>
         );
     }
-
-    
-
-export default Diagram;

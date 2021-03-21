@@ -1,0 +1,14 @@
+{
+  "extends": "@tsconfig/node12/tsconfig.json",
+
+  "compilerOptions": { 
+    "preserveConstEnums": true,
+    "outDir": "build/transpiled" 
+  },
+
+  "target": "es2015",
+
+  "files": ["src/server/index.ts"],
+  "include": ["src/server/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './Modal.css';
-import ModalFormField from './ModalFormField';
-import arrayUtils from '../arrayUtils.js';
+import { ModalFormField } from './ModalFormField';
+import { arrayUtils } from '../arrayUtils';
 
-const LoginForm = (props) => {
+interface ModalFormProps {
+  fieldNames: string[];
+  handleSubmit(formValues: string[]): void; 
+  buttonText: string;
+} 
+
+export const ModalForm = (props: ModalFormProps) => {
 
   const [formValues, setFormValues] = useState(props.fieldNames.map(() => ''));
 
-  const handleChange = (value, index) => {
+  const handleChange = (value: string, index: number) => {
     setFormValues(arrayUtils.replace(formValues, value, index));
   }
 
-  const handleSubmit = (event) => {
-    if (formValues.some(value => value === '')) {
+  const handleSubmit = (event: any) => {
+    if (formValues.some((value: string) => value === '')) {
       alert('One or more fields are empty!');  
     } else {
       props.handleSubmit(formValues);
@@ -20,7 +26,7 @@ const LoginForm = (props) => {
     }
   }
 
-  const fields = props.fieldNames.map((fieldName, index) =>
+  const fields = props.fieldNames.map((fieldName: string, index: number) =>
       <ModalFormField type={fieldName.toUpperCase() === "password".toUpperCase() ? "password" : "text"} key={fieldName} index={index} fieldName={fieldName} value={formValues[index]} handleChange={handleChange} />
   );
 
@@ -31,5 +37,3 @@ const LoginForm = (props) => {
     </form>
   )
 }
-
-export default LoginForm;

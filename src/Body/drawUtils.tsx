@@ -1,5 +1,7 @@
-const drawUtils = {
-    addMarker: (ctx, coords) => {
+import {Coordinates2D} from '../types';
+
+export const drawUtils = {
+    addMarker: (ctx: CanvasRenderingContext2D, coords: Coordinates2D) => {
         drawUtils.clearCanvas(ctx);
     
         // if (this.currentMarkers === null) {
@@ -12,16 +14,16 @@ const drawUtils = {
         drawUtils.drawMarker(ctx, coords);
     },
 
-    clearCanvas: (ctx) => {
+    clearCanvas: (ctx: CanvasRenderingContext2D) => {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     },
 
-    drawMarker: (ctx, coords) => {
+    drawMarker: (ctx: CanvasRenderingContext2D, coords: Coordinates2D) => {
         drawUtils.drawPoint(ctx, coords);
         drawUtils.drawCircle(ctx, coords);
     },
 
-    drawCircle: (ctx, centreCoord, radius=20) => {
+    drawCircle: (ctx: CanvasRenderingContext2D, centreCoord: Coordinates2D, radius=20) => {
         if (centreCoord) {
             ctx.beginPath();   
             ctx.arc(centreCoord.x, centreCoord.y, radius, 0, 2 * Math.PI);
@@ -33,7 +35,7 @@ const drawUtils = {
         }
     },
     
-    drawPoint: (ctx, centreCoord) => {
+    drawPoint: (ctx: CanvasRenderingContext2D, centreCoord: Coordinates2D) => {
         if (centreCoord) {
             ctx.beginPath();
             let radius = 2;
@@ -46,5 +48,3 @@ const drawUtils = {
         }
     }
 }
-
-export default drawUtils;

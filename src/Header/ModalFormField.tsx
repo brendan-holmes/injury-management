@@ -1,4 +1,12 @@
-const ModalFormField = (props) => {
+interface ModalFormFieldProps {
+  type: string;
+  fieldName: string;
+  value: string;
+  index: number;
+  handleChange(value: string, index: number): void
+}
+
+export const ModalFormField = (props: ModalFormFieldProps) => {
     const type = props.type ? props.type : "text"
     
     return (
@@ -9,5 +17,3 @@ const ModalFormField = (props) => {
       </label>
     )
   }
-
-export default ModalFormField;

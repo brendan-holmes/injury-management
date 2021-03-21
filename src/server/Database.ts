@@ -1,33 +1,31 @@
+import { Injury, User } from "../types";
+
 const { MongoClient, ObjectID } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wbxmo.mongodb.net/${process.env.DB_COLL}?retryWrites=true&w=majority`;
 
-class Database {
-    // Private fields
-    #injuries; // injuries
-    #db; // users
+export class Database {
+    injuries : Injury[] = [];
+    db: any;
 
     constructor() {
         this.init();
     }
 
-    async init(){
-        try {
-            const client = new MongoClient(uri, { useUnifiedTopology: true });
-            await client.connect();
+    init(){
+        const client = new MongoClient(uri, { useUnifiedTopology: true });
+        client.connect().then(() => {
             this.db = client.db(process.env.DB_COLL);
-            // this.users = db.collection('users');
-            await client.db("admin").command({ ping: 1 });
-            console.log("Connected to database server");
-        } catch (error) {
-            console.log(error);
-        }
+            console.log("Connected to database");
+        }).catch((error: Error) => {
+            console.log(`Error: Unable to connect to database. ${error}`)
+        });
     }
 
-    getUserByEmail = async (email) => {
+    getUserByEmail = async (email: string) => {
         return await this.db.collection('users').findOne({email: email});
     };
 
-    getUserById = async (id) => {
+    getUserById = async (id: string) => {
         return await this.db.collection('users').findOne({_id: ObjectID(id)});
     };
 
@@ -40,12 +38,12 @@ class Database {
         return wasSuccessful;
     }
 
-    createUser(user) {
+    createUser(user: User) {
         return this.db.collection('users')
             .insertOne(user);
     }
 
-    addInjury = async (email, injury) => {
+    addInjury = async (email: string, injury: Injury) => {
         injury.injuryId = ObjectID();
         try {
             return await this.db.collection('users').updateOne(
@@ -57,7 +55,7 @@ class Database {
         return []; // todo: return an error
     }
     
-    getAllInjuries = async (email) => {
+    getAllInjuries = async (email: string) => {
         const user = await this.getUserByEmail(email);
         if (user) {
             return user.injuries;
@@ -65,7 +63,7 @@ class Database {
         return []; // todo: return an error
     }
 
-    updateInjuryById = async (email, id, injury) => {
+    updateInjuryById = async (email: string, id: string, injury: Injury) => {
         console.log(`Updating injury id: ${id}, email: ${email}`);
         
         try {
@@ -87,7 +85,7 @@ class Database {
         return []; // todo: return an error
     }
 
-    removeInjuryById = async (email, id) => {
+    removeInjuryById = async (email: string, id: string) => {
 
         console.log(`Deleting injury id: ${id}, email: ${email}`);
 
@@ -107,5 +105,3 @@ class Database {
         }
     }
 }
-
-module.exports.Database =  Database;

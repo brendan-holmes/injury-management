@@ -1,12 +1,8 @@
-// Get a nicely formatted string from a Date object
-const dateUtils = {
-
-    formatDate: (date) => {
-        if (date === undefined) {
-            return '';
-        }
-
-        var milliseconds = Date.now() - date;
+export const dateUtils = {
+    
+    // Get a nicely formatted string from a Date object
+    formatDate: (date: Date) => {
+        var milliseconds = Date.now() - date.getTime();
         var seconds = milliseconds / 1000;
         var minutes = seconds / 60;
         var hours = minutes / 60;
@@ -31,5 +27,3 @@ const dateUtils = {
         }
     }
 }
-
-export default dateUtils;
