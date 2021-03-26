@@ -1,9 +1,8 @@
 interface ModalFormFieldProps {
   type: string;
-  fieldName: string;
   value: string;
-  index: number;
-  handleChange(value: string, index: number): void
+  handleChange(value: string): void;
+  children: any;
 }
 
 export const ModalFormField = (props: ModalFormFieldProps) => {
@@ -11,9 +10,9 @@ export const ModalFormField = (props: ModalFormFieldProps) => {
     
     return (
       <label>
-        {props.fieldName}
+        {props.children}
         <p className="field-error" style={{color:'red'}}>{props.value === '' ? '!' : ''}</p>
-        <input className="u-full-width" type={type} value={props.value} onChange={event => props.handleChange(event.target.value, props.index)} />
+        <input className="u-full-width" type={type} value={props.value} onChange={event => props.handleChange(event.target.value)} />
       </label>
     )
   }

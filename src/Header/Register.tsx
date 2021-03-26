@@ -1,6 +1,8 @@
 import { Modal } from './Modal'
 import './Login.css';
 import { api } from '../api';
+import { ModalFormField } from './ModalFormField';
+import { useState } from 'react';
 
 interface RegisterProps {
     handleSuccessfulRegistration(): void; 
@@ -10,9 +12,13 @@ interface RegisterProps {
 
 export const Register = (props: RegisterProps) => {
 
-    const handleSubmit = (fieldValues: string[]) => {
-        if (fieldValues !== undefined && fieldValues.length === 3) {
-            api.register(fieldValues[0], fieldValues[1], fieldValues[1])
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = () => {
+        if (name !== '' && email !== '' && password !== '') {
+            api.register(name, email, password)
                 .then((response: Response) => { if (response.ok) {
                     response.json().then( (data: any) => {
                     props.handleSuccessfulRegistration();
@@ -30,15 +36,19 @@ export const Register = (props: RegisterProps) => {
         }
     }
 
-    return (    
-        <Modal 
-            handleCloseWindow={props.handleCloseWindow}
-            heading="Create an account"
-            fieldNames = {["Name", "Email", "Password"]}
-            buttonText="Create Account 💪"
-            bottomText="Already have an account? Login here"
-            onClickBottomText={props.goToLoginWindow}
-            handleSubmit={handleSubmit}
-            />
+    return (   
+        <Modal handleCloseWindow={props.handleCloseWindow}>
+            <span className="close-button" onClick={props.handleCloseWindow}>&times;</span>
+            <h2>Create an account</h2>
+            
+            <form onSubmit={handleSubmit}>
+                <ModalFormField type="text" key={"name"} value={name} handleChange={setName}>Name</ModalFormField>
+                <ModalFormField type="text" key={"email"} value={email} handleChange={setEmail}>Email</ModalFormField>
+                <ModalFormField type="password" key={"password"} value={password} handleChange={setPassword}>Password</ModalFormField>
+                <button>Create Account 💪</button>
+            </form>
+
+            <p className="bottom-text" onClick={props.goToLoginWindow}>Already have an account? Login here</p>
+        </ Modal >
     );
 }

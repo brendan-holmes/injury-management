@@ -3,6 +3,7 @@ import { api } from '../api';
 import { Login } from './Login';
 import { Register } from './Register';
 import './nav.css';
+import { Modal } from './Modal';
 
 interface NavProps {
     setIsLoggedIn(isLoggedIn: boolean): void;
@@ -22,17 +23,22 @@ export const Nav = (props: NavProps) => {
     const handleSuccessfulLogin = (userName: string) => { setIsLoggingIn(false); props.setIsLoggedIn(true); props.setUserName(userName); };
     const handleSuccessfulRegistration = () => { console.log("Successfully created new account."); setIsLoggingIn(true); setIsRegistering(false); }
     const handleSuccessfulLogOut = () => { props.setIsLoggedIn(false); props.setUserName(''); };
-    
-    const loginModal = !props.isLoggedIn && isLoggingIn ? <Login 
-                                        handleCloseWindow={handleCloseWindow} 
-                                        goToRegisterWindow={handleGoToRegisterWindow} 
-                                        handleSuccessfulLogin={handleSuccessfulLogin}
-                                        /> : null;
-    const registerModal = isRegistering ? <Register 
-                                        handleCloseWindow={handleCloseWindow} 
-                                        goToLoginWindow={handleGoToLoginWindow}
-                                        handleSuccessfulRegistration={handleSuccessfulRegistration}
-                                        /> : null;
+    const showLogin = !props.isLoggedIn && isLoggingIn;
+    const showRegistration = isRegistering;
+    const handleLogInOutButtonClick = () => {
+        if (props.isLoggedIn) {
+            api.logOut()
+                .then((response: Response) => {response.ok ? handleSuccessfulLogOut() : console.log('Unable to logout at this time.')})
+                .catch((error: Error) => {console.log(`Unable to logout at this time. ${error}`);
+                });
+        } else {
+            setIsLoggingIn(true);
+        }};
+
+    const loginRegistrationWindow = 
+        showLogin ? <Login handleCloseWindow={handleCloseWindow} goToRegisterWindow={handleGoToRegisterWindow} handleSuccessfulLogin={handleSuccessfulLogin}/> 
+        : showRegistration ? <Register handleCloseWindow={handleCloseWindow} goToLoginWindow={handleGoToLoginWindow} handleSuccessfulRegistration={handleSuccessfulRegistration} /> 
+            : null;
 
     const checkLoggedIn = () => {
         api.checkLoggedIn()
@@ -55,20 +61,14 @@ export const Nav = (props: NavProps) => {
     return (
         <div className="nav">
             <p className="nav-item title">Aegle: Injury Management</p>
+            
             <p className="nav-item signed-in">{ props.isLoggedIn ? `${props.userName}` : 'Not signed in'}</p> 
-            <button className="nav-item" onClick={
-                props.isLoggedIn 
-                    ? () => api.logOut()
-                                    .then((response: Response) => {response.ok ? handleSuccessfulLogOut() : console.log('Unable to logout at this time.')})
-                                    .catch((error: Error) => {console.log(`Unable to logout at this time. ${error}`);
-                                    })
-                    : () => setIsLoggingIn(true)
-                }>
+            
+            <button className="nav-item" onClick={handleLogInOutButtonClick}>
                 { props.isLoggedIn ? 'Log out' : 'Login'}
             </button>
 
-            {loginModal}
-            {registerModal}
+            {loginRegistrationWindow}
         </div>
     );
 }

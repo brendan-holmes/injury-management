@@ -1,6 +1,8 @@
-import { Modal } from './Modal'
 import './Login.css';
 import { api } from '../api';
+import { ModalFormField } from './ModalFormField';
+import React, { useState } from 'react';
+import { Modal } from './Modal';
 
 interface LoginProps {
     handleSuccessfulLogin(userName: string): void;
@@ -9,9 +11,13 @@ interface LoginProps {
 }
 
 export const Login = (props: LoginProps) => {
-    const handleSubmit = (fieldValues: string[]) => {
-        if (fieldValues !== undefined && fieldValues.length === 2) {
-            api.login(fieldValues[0], fieldValues[1])
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = () => {
+        if (email !== '' && password !== '') {
+            api.login(email, password)
                 .then((response: Response) => response.json())
                 .then((data: any) => {
                     if (data.userName) {
@@ -24,17 +30,20 @@ export const Login = (props: LoginProps) => {
         else {
             console.log("Error submitting login form data.");
         }
-    }
+    };
 
-    return (    
-        < Modal 
-            handleCloseWindow={props.handleCloseWindow}
-            heading="Login"
-            fieldNames = {["Email", "Password"]}
-            buttonText="Login 💪"
-            bottomText="Create an account"
-            onClickBottomText={props.goToRegisterWindow}
-            handleSubmit={handleSubmit}
-            />
+    return (   
+        <Modal handleCloseWindow={props.handleCloseWindow}>
+            <span className="close-button" onClick={props.handleCloseWindow}>&times;</span>
+            <h2>Login</h2>
+            
+            <form onSubmit={handleSubmit}>
+                <ModalFormField type="text" key={"email"} value={email} handleChange={setEmail}>Email</ModalFormField>
+                <ModalFormField type="password" key={"password"} value={password} handleChange={setPassword}>Password</ModalFormField>
+                <button>Login 💪</button>
+            </form>
+
+            <p className="bottom-text" onClick={props.goToRegisterWindow}>Create an account</p>    
+        </ Modal >
     );
 }
