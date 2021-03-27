@@ -1,7 +1,7 @@
 import './Login.css';
 import { api } from '../api';
 import { ModalFormField } from './ModalFormField';
-import React, { useState } from 'react';
+import React, { FormEventHandler, useState } from 'react';
 import { Modal } from './Modal';
 
 interface LoginProps {
@@ -15,12 +15,14 @@ export const Login = (props: LoginProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = () => {
+    const handleSubmit = (event: any) => {
         if (email !== '' && password !== '') {
             api.login(email, password)
                 .then((response: Response) => response.json())
                 .then((data: any) => {
                     if (data.userName) {
+                        console.log(`Logged in as ${data.userName}`);
+                        
                         props.handleSuccessfulLogin(data.userName);
                     } else {
                         console.log(`Unable to login. ${data.message}`);
@@ -30,6 +32,8 @@ export const Login = (props: LoginProps) => {
         else {
             console.log("Error submitting login form data.");
         }
+
+        event.preventDefault();
     };
 
     return (   

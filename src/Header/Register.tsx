@@ -16,7 +16,7 @@ export const Register = (props: RegisterProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = () => {
+    const handleSubmit = (event: any) => {
         if (name !== '' && email !== '' && password !== '') {
             api.register(name, email, password)
                 .then((response: Response) => { if (response.ok) {
@@ -34,6 +34,8 @@ export const Register = (props: RegisterProps) => {
         else {
             console.log("Error submitting register form data.");
         }
+
+        event.preventDefault();
     }
 
     return (   

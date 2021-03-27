@@ -3,7 +3,6 @@ import { api } from '../api';
 import { Login } from './Login';
 import { Register } from './Register';
 import './nav.css';
-import { Modal } from './Modal';
 
 interface NavProps {
     setIsLoggedIn(isLoggedIn: boolean): void;
