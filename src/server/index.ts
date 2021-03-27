@@ -76,16 +76,16 @@ apiRouter.post('/injuries', checkAuthenticated, [
         }
 
         const injury: Injury = {
-            bodyPart: req.body.bodyPart.toString(),
-            bodyDiagramCoordinates: req.body.bodyDiagramCoordinates.toString(),
+            bodyPart: req.body.bodyPart ? req.body.bodyPart.toString() : '',
+            bodyDiagramCoordinates: req.body.bodyDiagramCoordinates,
             created: new Date(),
-            side: req.body.side.toString(),
-            painLevel: req.body.painLevel.toString(),
-            firstOccurrence: req.body.firstOccurrence.toString(),
-            frequencyOfSymptoms: req.body.frequencyOfSymptoms.toString(),
-            cause: req.body.cause.toString(),
-            triggers: req.body.triggers.toString(),
-            treatment: req.body.treatment.toString(),
+            side: req.body.side ? req.body.side.toString() : '',
+            painLevel: req.body.painLevel ? req.body.painLevel.toString() : '',
+            firstOccurrence: req.body.firstOccurrence ? req.body.firstOccurrence.toString() : '',
+            frequencyOfSymptoms: req.body.frequencyOfSymptoms ? req.body.frequencyOfSymptoms.toString() : '',
+            cause: req.body.cause ? req.body.cause.toString() : '',
+            triggers: req.body.triggers ? req.body.triggers.toString() : '',
+            treatment: req.body.treatment ? req.body.treatment.toString() : '',
         };
 
         // insert into DB

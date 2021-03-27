@@ -2,53 +2,50 @@ import './injuryForm.css';
 import { AddButton } from './AddButton';
 import { api } from '../api';
 import { useState } from 'react';
-import { arrayUtils } from '../arrayUtils';
 import { Coordinates2D } from '../types';
+import { InjuryField } from './InjuryField';
 
 interface InjuryFormProps {
     setIsEditMode(value: boolean): void;
     userSelectionCoords: Coordinates2D | null;
     isLoggedIn: boolean;
     isEditMode: boolean;
+    reloadInjuries(): void;
 }
 
 export const InjuryForm = (props: InjuryFormProps) => {
 
-    const fieldNames = [
-        "Body part",            //0
-        "Side",                 //1
-        "Pain level",           //2
-        "First occurred",       //3
-        "Frequency of symptoms",//4
-        "Cause",                //5
-        "Treatment",            //6
-        "Triggers",             //7
-    ]
-
-    const [formValues, setFormValues] = useState(fieldNames.map(() => ''));
-
-    const handleChange = (value: string, index: number) => {
-        setFormValues(arrayUtils.replace(formValues, value, index));
-      }
+    const [formValues, setFormValues] = useState({
+        bodyPart: '',
+        side: '',
+        painLevel: '',
+        firstOccurrence: '',
+        frequencyOfSymptoms: '',
+        cause: '',
+        treatment: '',
+        triggers: '',
+    });
 
     const handleCloseForm = () => { props.setIsEditMode(false) };
-    const handleSubmitForm = () => { 
-        if (formValues[0] !== '' && undefined !== props.userSelectionCoords && props.userSelectionCoords !== null) {
+    const handleSubmitForm = (e: any) => { 
+        if (formValues.bodyPart !== '' && props.userSelectionCoords !== undefined && props.userSelectionCoords !== null) {
             api.postInjury({
-                bodyPart: formValues[0], //bodyPart,
+                bodyPart: formValues.bodyPart,
                 bodyDiagramCoordinates: props.userSelectionCoords,
-                side: formValues[1],
-                painLevel: formValues[2],
-                firstOccurrence: new Date(formValues[3]),
-                frequencyOfSymptoms: formValues[4],
-                cause: formValues[5],
-                treatment: formValues[6],
-                triggers: formValues[7],
+                side: formValues.side,
+                painLevel: formValues.painLevel,
+                firstOccurrence: new Date(formValues.firstOccurrence),
+                frequencyOfSymptoms: formValues.frequencyOfSymptoms,
+                cause: formValues.cause,
+                treatment: formValues.treatment,
+                triggers: formValues.triggers,
             }).then( () => props.setIsEditMode(false) );    
         } else {
-            alert("Please add description and location on diagram.")
+            alert("Please add body part and location on diagram.")
         }
+        props.reloadInjuries();
     };
+
     const handleAddButtonClicked = () => {
         if (props.isLoggedIn) {   
             props.setIsEditMode(true)
@@ -70,12 +67,15 @@ export const InjuryForm = (props: InjuryFormProps) => {
                     </p>
                 </label>
 
-                {fieldNames.map((fieldName, index) => 
-                    <label key={fieldName}>
-                        <span className="field-label">{fieldName}</span>
-                        <input onChange={event => handleChange(event.target.value, index)}/>
-                    </label>
-                )}
+                <InjuryField value={formValues.bodyPart} handleChange={(newValue) => setFormValues({...formValues, bodyPart: newValue} as any)}>Body part </InjuryField>
+                <InjuryField value={formValues.side} handleChange={(newValue) => setFormValues({...formValues, side: newValue} as any)}>Side </InjuryField>
+                <InjuryField value={formValues.painLevel} handleChange={(newValue) => setFormValues({...formValues, painLevel: newValue} as any)}>Pain level </InjuryField>
+                <InjuryField value={formValues.firstOccurrence.toString()} type="date" handleChange={newValue => setFormValues({...formValues, firstOccurred: newValue.toString()} as any)}>First occurred</InjuryField>
+                <InjuryField value={formValues.frequencyOfSymptoms} handleChange={(newValue) => setFormValues({...formValues, frequencyOfSymptoms: newValue} as any)}>Frequency of symptoms </InjuryField>
+                <InjuryField value={formValues.cause} handleChange={(newValue) => setFormValues({...formValues, cause: newValue} as any)}>Cause </InjuryField>
+                <InjuryField value={formValues.treatment} handleChange={(newValue) => setFormValues({...formValues, treatment: newValue} as any)}>Treatment </InjuryField>
+                <InjuryField value={formValues.triggers} handleChange={(newValue) => setFormValues({...formValues, triggers: newValue} as any)}>Triggers </InjuryField>
+
                 <button className="submit" onClick={handleSubmitForm}>Save 💪</button>
             </form>
         </> : null;

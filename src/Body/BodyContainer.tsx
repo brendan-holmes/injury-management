@@ -31,7 +31,7 @@ export const BodyContainer = (props: BodyContainerProps) => {
     return (
         <>
             <Diagram isEditMode={isEditMode} injuries={injuries} isLoggedIn={props.isLoggedIn} userSelectionCoords={userSelectionCoords} setUserSelectionCoords={setUserSelectionCoords}/>
-            <InjuryForm isEditMode={isEditMode} setIsEditMode={setIsEditMode} isLoggedIn={props.isLoggedIn} userSelectionCoords={userSelectionCoords}/>
+            <InjuryForm isEditMode={isEditMode} setIsEditMode={setIsEditMode} isLoggedIn={props.isLoggedIn} userSelectionCoords={userSelectionCoords} reloadInjuries={getInjuries}/>
             <InjuryList isLoggedIn={props.isLoggedIn} injuries={injuries} reloadInjuries={getInjuries}/>
         </>
     );
