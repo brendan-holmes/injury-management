@@ -56,23 +56,36 @@ export const InjuryCard = (props: InjuryCardProps) => {
         setIsInUpdateMode(false)
     };
 
+    const injuryField = (label: string, value: any) => {
+        if (value === '' || value === undefined || value === null) {
+            return null;
+        }
+
+        return (
+            <p className='injury-content'><span className='injury-content-label'>{`${label} `}</span>{value}</p>
+        );
+    }
+
     const injuryFields = !isInUpdateMode ? 
         <> 
-            <p className='injury-content'><span className='injury-content-label'>Side </span>{props.injury.side}</p> 
-            <p className='injury-content'><span className='injury-content-label'>Pain level </span>{props.injury.painLevel}</p> 
-            <p className='injury-content'><span className='injury-content-label'>First occurred </span>{props.injury.firstOccurrence}</p> 
-            <p className='injury-content'><span className='injury-content-label'>Frequency of symptoms </span>{props.injury.frequencyOfSymptoms}</p> 
-            <p className='injury-content'><span className='injury-content-label'>Cause </span>{props.injury.cause}</p> 
-            <p className='injury-content'><span className='injury-content-label'>Treatment </span>{props.injury.treatment}</p> 
-            <p className='injury-content'><span className='injury-content-label'>Triggers </span>{props.injury.triggers}</p> 
+            {injuryField("Side", props.injury.side)}
+            {injuryField("Pain level", props.injury.painLevel)}
+            {injuryField("First occurred", props.injury.firstOccurrence)}
+            {injuryField("Frequency of symptoms", props.injury.frequencyOfSymptoms)}
+            {injuryField("Cause", props.injury.cause)}
+            {injuryField("Treatment", props.injury.treatment)}
+            {injuryField("Triggers", props.injury.triggers)}
         </>
         : null;
 
     const injuryButtons = !isInUpdateMode ? 
-        <span>
-            <FontAwesomeIcon className={'injury-button'} icon={faTrashAlt} onClick={handleDeleteInjury}/>
-            <FontAwesomeIcon className={'injury-button'} icon={faPencilAlt} onClick={() => setIsInUpdateMode(true)}/>
-        </span> : null;
+        <div>
+            <span>
+                <FontAwesomeIcon className={'injury-button'} icon={faTrashAlt} onClick={handleDeleteInjury}/>
+                <FontAwesomeIcon className={'injury-button'} icon={faPencilAlt} onClick={() => setIsInUpdateMode(true)}/>
+            </span>
+        </div>
+         : null;
 
     const updateSubForm = isInUpdateMode ?
         <>
